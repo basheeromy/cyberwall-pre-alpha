@@ -5,7 +5,7 @@ import {
 	forwardRef,
 	usePrefersReducedMotion,
 } from '@chakra-ui/react'
-import chakraLogo from '../assets/chakra.svg'
+import chakraLogo from '../assets/logo.svg'
 
 const spin = keyframes`
   from { transform: rotate(0deg); }
@@ -21,7 +21,7 @@ export const Logo = forwardRef<ImageProps, 'img'>((props, ref) => {
 
 	return (
 		<chakra.img
-			animation={animation}
+			//animation={animation}
 			src={chakraLogo}
 			ref={ref}
 			{...props}

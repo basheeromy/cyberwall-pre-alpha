@@ -8,9 +8,10 @@ import theme from './theme'
 
 import { Layout } from './Layout'
 import { RouterError } from './pages/RouterError'
-import { Home } from './pages/Home'
 import { ZustandExample } from './pages/ZustandExample'
 import { NotFound } from './pages/NotFound'
+import Home from './pages/Home'
+import Chat from './pages/Chat'
 
 const router: Router = createBrowserRouter([
 	{
@@ -30,6 +31,10 @@ const router: Router = createBrowserRouter([
 				path: '*',
 				element: <NotFound />,
 			},
+			{
+				path: 'chat',
+				element: <Chat />
+			}
 		],
 	},
 ])

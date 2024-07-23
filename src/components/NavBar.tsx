@@ -1,7 +1,8 @@
 import { FunctionComponent, ReactElement } from 'react'
 
 import { Link as ReactRouterLink } from 'react-router-dom'
-import { Box, Flex, Text, Link, useColorMode } from '@chakra-ui/react'
+import { Box, Flex, Text, Link, useColorMode, Icon, IconButton } from '@chakra-ui/react'
+import { FiPhone } from 'react-icons/fi'
 // We need to use Chakra UI's <Link> component for consistency with the rest of the UI.
 // But we need to use React Router's <Link> component for the routing to work properly.
 // So we import Chakra UI's <Link> component, and then import React Router's <Link> component as ReactRouterLink.
@@ -27,20 +28,28 @@ export const NavBar: FunctionComponent = (): ReactElement => {
 		>
 			<Box>
 				<Link as={ReactRouterLink} to="/" mr={10}>
-					Home
+					How to use
 				</Link>
 				<Link as={ReactRouterLink} to="/zustand-example" mr={10}>
-					Zustand Example
-				</Link>
-				<Link as={ReactRouterLink} to="/abc123" mr={10}>
-					404 Example
+					Impact of CyberWall
 				</Link>
 			</Box>
 
-			<Flex alignItems={'center'} justifyContent={'space-between'}>
-				<Text mr={10}>{import.meta.env.VITE_EXAMPLE}</Text>
-				<Text>Count: {count}</Text>
-				<ColorModeSwitcher justifySelf="flex-end" />
+			<Flex alignItems={'end'} justifyContent={'space-between'}>
+				{/* <Text mr={10}>{import.meta.env.VITE_EXAMPLE}</Text> */}
+				<Link>
+					<Flex alignItems={'end'} direction={'column'}>
+						<Text>To report issues</Text>
+						<Text>Call 1930</Text>
+					</Flex>
+
+				</Link>
+
+				<IconButton aria-label={''}
+					background={'fff'}
+					icon={<FiPhone />}>
+				</IconButton>
+
 			</Flex>
 		</Flex>
 	)

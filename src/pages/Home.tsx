@@ -1,64 +1,102 @@
-import { FunctionComponent, ReactElement } from 'react'
-import {
-	Text,
-	Button,
-	Box,
-	Code,
-	Tooltip,
-	Link,
-	useDisclosure,
-	Modal,
-	ModalOverlay,
-	ModalContent,
-	ModalHeader,
-	ModalCloseButton,
-	ModalBody,
-	ModalFooter,
-} from '@chakra-ui/react'
-import { Logo } from '../components/Logo'
+import React, { useState } from 'react';
+import { ChakraProvider, Box, IconButton, Input, InputGroup, InputRightElement, Button, Wrap, WrapItem, Text } from '@chakra-ui/react';
+import { Logo } from '../components/Logo';
+import { FiSearch } from 'react-icons/fi';
 
-export const Home: FunctionComponent = (): ReactElement => {
-	const { isOpen, onOpen, onClose } = useDisclosure()
+// Main Home Component
+const Home: React.FC = () => {
+	const [query, setQuery] = useState<string>('');
+
+	const handleQuestionClick = (question: string) => {
+		setQuery(question); // Update search query with the clicked question
+	};
+
 	return (
-		<Box>
-			<Logo h="40vmin" pointerEvents="none" />
+		<ChakraProvider>
+			<Box maxWidth="1200px" margin="0 auto" alignContent={'center'}>
+				<Box as="main" padding={4}>
+					<Logo />
+					<SearchBar query={query} setQuery={setQuery} />
+					<QuickQuestions onQuestionClick={handleQuestionClick} />
+				</Box>
+			</Box>
+		</ChakraProvider>
+	);
+}
 
-			<Text my={10}>
-				Edit <Code>src/pages/Home.tsx</Code> and save to reload.{' '}
-				<Link
-					color="teal.500"
-					href="https://chakra-ui.com"
-					target="_blank"
-					rel="noopener noreferrer"
-				>
-					Learn Chakra
-				</Link>
-			</Text>
+export default Home;
 
-			<Tooltip label="This will open a modal" placement="top">
-				<Button onClick={onOpen}>Click this button</Button>
-			</Tooltip>
+// SearchBar Component
+interface SearchBarProps {
+	query: string;
+	setQuery: React.Dispatch<React.SetStateAction<string>>;
+}
 
-			<Modal isOpen={isOpen} onClose={onClose}>
-				<ModalOverlay />
-				<ModalContent>
-					<ModalHeader>Example Modal</ModalHeader>
-					<ModalCloseButton />
-					<ModalBody>
-						<Text>
-							Here&apos;s a Chakra UI modal. You can close it by
-							clicking &quot;Close&quot;
-						</Text>
-					</ModalBody>
+const SearchBar: React.FC<SearchBarProps> = ({ query, setQuery }) => {
+	const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+		e.preventDefault();
+		if (query.trim()) {
+			window.location.href = `/chat?query=${encodeURIComponent(query)}`;
+		}
+	};
 
-					<ModalFooter>
-						<Button colorScheme="blue" mr={3} onClick={onClose}>
-							Close
-						</Button>
-						<Button variant="ghost">Secondary Action</Button>
-					</ModalFooter>
-				</ModalContent>
-			</Modal>
-		</Box>
-	)
+	const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+		if (e.key === 'Enter') {
+			e.preventDefault(); // Prevent default enter behavior
+			handleSubmit(e as unknown as React.FormEvent<HTMLFormElement>); // Call submit handler
+		}
+	};
+
+	return (
+		<form onSubmit={handleSubmit}>
+			<InputGroup size="lg" marginY={8}>
+				<Input
+					placeholder="Ask me anything!"
+					value={query}
+					onChange={(e) => setQuery(e.target.value)}
+					onKeyDown={handleKeyDown}
+				/>
+				<InputRightElement>
+					<IconButton
+						aria-label="Search"
+						icon={<FiSearch />}
+						size="sm"
+						colorScheme="blue"
+						type="submit"
+					/>
+				</InputRightElement>
+			</InputGroup>
+		</form>
+	);
+};
+
+// QuickQuestions Component
+interface QuickQuestionsProps {
+	onQuestionClick: (question: string) => void;
+}
+
+const QuickQuestions: React.FC<QuickQuestionsProps> = ({ onQuestionClick }) => {
+	const questions: string[] = [
+		"Is this website trustable?",
+		"Is this number trustable?",
+		"This fb friend is asking for money",
+		"Is this OTP message from SBI?",
+		"How can register a complain?"
+	];
+
+	return (
+		<Wrap spacing={4} marginY={8}>
+			{questions.map((question, index) => (
+				<WrapItem key={index}>
+					<Button
+						colorScheme="purple"
+						variant="outline"
+						onClick={() => onQuestionClick(question)} // Call function with clicked question
+					>
+						{question}
+					</Button>
+				</WrapItem>
+			))}
+		</Wrap>
+	);
 }
