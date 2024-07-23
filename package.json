@@ -25,7 +25,8 @@
     "preview": "vite preview",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "test": "vitest",
-    "test:coverage": "vitest run --coverage --watch=false"
+    "test:coverage": "vitest run --coverage --watch=false",
+    "deploy": "tsc && vite build && firebase deploy"
   },
   "eslintConfig": {
     "extends": "react-app"
