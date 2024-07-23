@@ -41,7 +41,7 @@ const ChatInterface: React.FC = () => {
     const fetchInitialResponse = async (query: string) => {
         setIsTyping(true);
         try {
-            const response = await axios.post('https://cors-anywhere.herokuapp.com/https://ragnarok.nysaclan.com/api/v1/wall/chat', {
+            const response = await axios.post('https://ragnarok.nysaclan.com/api/v1/wall/chat', {
                 data: [
                     {
                         content: "Hello! How can I assist you today?",
