@@ -1,56 +1,118 @@
-import { FunctionComponent, ReactElement } from 'react'
-
-import { Link as ReactRouterLink } from 'react-router-dom'
-import { Box, Flex, Text, Link, useColorMode, Icon, IconButton } from '@chakra-ui/react'
-import { FiPhone } from 'react-icons/fi'
-// We need to use Chakra UI's <Link> component for consistency with the rest of the UI.
-// But we need to use React Router's <Link> component for the routing to work properly.
-// So we import Chakra UI's <Link> component, and then import React Router's <Link> component as ReactRouterLink.
-// We can then pass the "as" prop to Chakra UI's <Link> component. See: https://chakra-ui.com/docs/components/link/usage#usage-with-routing-library
-
-import { ColorModeSwitcher } from './ColorModeSwitcher'
-import { useCounterStore } from '../stores/counterStore'
+import { FunctionComponent, ReactElement, useState } from 'react';
+import { Link as ReactRouterLink } from 'react-router-dom';
+import {
+	Box,
+	Flex,
+	Text,
+	Link,
+	useColorMode,
+	Icon,
+	IconButton,
+	Drawer,
+	DrawerBody,
+	DrawerHeader,
+	DrawerOverlay,
+	DrawerContent,
+	DrawerCloseButton,
+	useDisclosure,
+	Button,
+} from '@chakra-ui/react';
+import { FiGlobe, FiMenu } from 'react-icons/fi';
+import { ColorModeSwitcher } from './ColorModeSwitcher';
+import { useCounterStore } from '../stores/counterStore';
+import React from 'react';
 
 export const NavBar: FunctionComponent = (): ReactElement => {
-	const { colorMode } = useColorMode()
-	const count = useCounterStore((state) => state.count)
+	const count = useCounterStore((state) => state.count);
+	const { isOpen, onOpen, onClose } = useDisclosure();
+	const btnRef = React.useRef<HTMLButtonElement>(null);
+
 	return (
-		<Flex
-			alignItems={'center'}
-			justifyContent={'space-between'}
-			borderBottom={1}
-			borderStyle={'solid'}
-			borderColor={colorMode === 'light' ? 'gray.100' : 'gray.900'}
-			shadow={'sm'}
-			px={10}
-			py={1}
-			fontSize={'sm'}
-		>
-			<Box>
-				<Link as={ReactRouterLink} to="/" mr={10}>
-					How to use
-				</Link>
-				<Link as={ReactRouterLink} to="/zustand-example" mr={10}>
-					Impact of CyberWall
-				</Link>
-			</Box>
+		<Flex width={'100%'} direction={'column'}>
+			<Flex
+				alignItems="center"
+				justifyContent="center"
+				bg="#f0f0f0"
+				paddingY="10px"
+			>
+				<Text>
+					Call{' '}
+					<Box as="span" fontWeight="bold">
+						1903
+					</Box>{' '}
+					to report crimes
+				</Text>
+			</Flex>
+			<Flex
+				alignItems={'center'}
+				justifyContent={'space-between'}
+				borderStyle={'solid'}
+				shadow={'none'}
+				px={10}
+				py={5}
+				fontSize={'sm'}
+			>
+				<Box display={{ base: 'block', md: 'none' }}>
+					<IconButton
+						icon={<FiMenu />}
+						aria-label="Open Menu"
+						ref={btnRef}
+						onClick={onOpen}
+					/>
+				</Box>
+				<Drawer
+					isOpen={isOpen}
+					placement="left"
+					onClose={onClose}
+					finalFocusRef={btnRef}
+				>
+					<DrawerOverlay />
+					<DrawerContent>
+						<DrawerCloseButton />
+						<DrawerHeader>Menu</DrawerHeader>
+						<DrawerBody>
+							<Flex direction={'column'}>
+								<Link as={ReactRouterLink} to="/" mb={4} onClick={onClose} >
+									How to use?
+								</Link>
+								<Link as={ReactRouterLink} to="/zustand-example" mb={4} onClick={onClose}>
+									Impact of CyberWall
+								</Link>
+							</Flex>
 
-			<Flex alignItems={'end'} justifyContent={'space-between'}>
-				{/* <Text mr={10}>{import.meta.env.VITE_EXAMPLE}</Text> */}
-				<Link>
-					<Flex alignItems={'end'} direction={'column'}>
-						<Text>To report issues</Text>
-						<Text>Call 1930</Text>
-					</Flex>
 
-				</Link>
-
-				<IconButton aria-label={''}
-					background={'fff'}
-					icon={<FiPhone />}>
-				</IconButton>
-
+						</DrawerBody>
+					</DrawerContent>
+				</Drawer>
+				<Box display={{ base: 'none', md: 'block' }} color={'#808080'}>
+					<Link as={ReactRouterLink} to="/" mr={10}>
+						How to use?
+					</Link>
+					<Link as={ReactRouterLink} to="/zustand-example" mr={10}>
+						Impact of CyberWall
+					</Link>
+				</Box>
+				<Flex alignItems={'end'} justifyContent={'space-between'}>
+					<Link>
+						<Flex alignItems={'center'}>
+							<Flex alignItems={'end'} direction={'column'}>
+								<Text fontSize={14}>Change language</Text>
+								<Text
+									fontSize={24}
+									color={'#000AFF'}
+									fontWeight={'700'}
+									decoration={'underline'}
+									lineHeight={'.5'}
+								>
+									മലയാളം
+								</Text>
+							</Flex>
+							<Box width={'5px'} />
+							<FiGlobe size={36} />
+						</Flex>
+					</Link>
+				</Flex>
 			</Flex>
 		</Flex>
-	)
-}
+	);
+};

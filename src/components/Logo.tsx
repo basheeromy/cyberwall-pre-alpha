@@ -22,6 +22,8 @@ export const Logo = forwardRef<ImageProps, 'img'>((props, ref) => {
 	return (
 		<chakra.img
 			//animation={animation}
+			alignItems={'center'}
+			alignContent={'center'}
 			src={chakraLogo}
 			ref={ref}
 			{...props}

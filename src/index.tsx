@@ -16,7 +16,7 @@ import Chat from './pages/Chat'
 const router: Router = createBrowserRouter([
 	{
 		path: '/',
-		element: <Layout />,
+		//element: <Layout />,
 		errorElement: <RouterError />,
 		children: [
 			{
