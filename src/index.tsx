@@ -12,6 +12,7 @@ import { ZustandExample } from './pages/ZustandExample'
 import { NotFound } from './pages/NotFound'
 import Home from './pages/Home'
 import Chat from './pages/Chat'
+import { Search } from './pages/Search'
 
 const router: Router = createBrowserRouter([
 	{
@@ -34,6 +35,10 @@ const router: Router = createBrowserRouter([
 			{
 				path: 'chat',
 				element: <Chat />
+			},
+			{
+				path: 'search',
+				element: <Search />
 			}
 		],
 	},

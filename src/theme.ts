@@ -49,6 +49,9 @@ const theme = extendTheme({
 			},
 		},
 	},
+	shadows: {
+		md: '0 0 20px 20px rgba(0, 0, 0, 0.01)', // Custom shadow
+	},
 })
 
 export default theme
