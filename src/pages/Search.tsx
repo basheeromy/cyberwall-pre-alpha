@@ -1,11 +1,12 @@
-import axios from 'axios';
-import { FormEvent, useEffect, useState } from 'react';
-import LoadingState from '../components/SearchPage/loadingStateComponent';
+import axios from 'axios'
+import { FormEvent, useEffect, useState } from 'react'
+import { useLocation, useNavigate } from 'react-router-dom'
+import LoadingState from '../components/SearchPage/loadingStateComponent'
 import {
     ActionsList,
     BoxWithShareCTA,
     ReasonsList,
-} from '../components/SearchPage/dangerMeter';
+} from '../components/SearchPage/dangerMeter'
 import {
     Box,
     Flex,
@@ -16,38 +17,38 @@ import {
     InputRightElement,
     Link,
     VStack,
-} from '@chakra-ui/react';
-import { PiMagicWand, PiArrowRightBold } from 'react-icons/pi';
-import { Logo } from '../components/Logo';
-import { DangerMeter } from '../components/SearchPage/dangerMeter';
-import ErrorWidget from '../components/ErrorWidget';
+} from '@chakra-ui/react'
+import { PiMagicWand, PiArrowRightBold } from 'react-icons/pi'
+import { Logo } from '../components/Logo'
+import { DangerMeter } from '../components/SearchPage/dangerMeter'
+import ErrorWidget from '../components/ErrorWidget'
+import SearchBar from '../components/HomePage/searchBar'
 
 export function Search(): JSX.Element {
-    const queryParams = new URLSearchParams(window.location.search);
-    const query = queryParams.get('query') || '';
-    const attachment = queryParams.get('attachment') || '';
-    const [error, setError] = useState<string | null>(null);
-    const [isTyping, setIsTyping] = useState(false);
-    const [responseData, setResponseData] = useState<any>(null);
-    const [detailedResponse, setDetailedResponse] = useState<any>(null);
-    const [searchQueryType, setType] = useState<string>();
-    const [searchQuery, setSearchQuery] = useState<string>(query);
+    const location = useLocation()
+    const { query = '', attachment = null } = location.state || {}
+    const [error, setError] = useState<string | null>(null)
+    const [isTyping, setIsTyping] = useState(false)
+    const [responseData, setResponseData] = useState<any>(null)
+    const [detailedResponse, setDetailedResponse] = useState<any>(null)
+    const [searchQueryType, setType] = useState<string>()
+    const [searchQuery, setSearchQuery] = useState<string>(query)
 
     useEffect(() => {
         if (attachment) {
-            // Directly handle APK analysis if an attachment is present
-            analyzeApk(attachment)
-                .catch((err) => {
-                    console.error('Error analyzing APK:', err);
-                    setError('Failed to analyze the attached file. Please try again.');
-                });
+            analyzeApk(attachment).catch((err) => {
+                console.error('Error analyzing APK:', err)
+                setError(
+                    'Failed to analyze the attached file. Please try again.',
+                )
+            })
         } else if (query) {
-            fetchInitialResponse(query);
+            fetchInitialResponse(query)
         }
-    }, [attachment, query]);
+    }, [])
 
     const fetchInitialResponse = async (query: string) => {
-        setIsTyping(true);
+        setIsTyping(true)
         try {
             const response = await axios.post(
                 'https://ragnarok.nysaclan.com/api/v1/wall/chat',
@@ -62,49 +63,49 @@ export function Search(): JSX.Element {
                     headers: {
                         'Content-Type': 'application/json',
                     },
-                }
-            );
+                },
+            )
 
-            setResponseData(response.data);
-            setIsTyping(false);
-            setError(null); // Clear any previous errors
+            setResponseData(response.data)
+            setIsTyping(false)
+            setError(null) // Clear any previous errors
 
-            // Based on mode, call the appropriate API
             if (response.data.response) {
                 switch (response.data.response.mode) {
                     case 'URL':
-                        await analyzeUrl(response.data.response.argument.url);
-                        setType('Url');
-                        break;
+                        await analyzeUrl(response.data.response.argument.url)
+                        setType('Url')
+                        break
                     case 'SMS':
                         await analyzeSms(
                             response.data.response.argument.sms_content,
-                            response.data.response.argument.sms_header
-                        );
-                        setType('SMS');
-                        break;
+                            response.data.response.argument.sms_header,
+                        )
+                        setType('SMS')
+                        break
                     case 'APK':
                         // APK handling is already managed in the attachment case
-                        setType('APK');
-                        break;
+                        setType('APK')
+                        break
                     case 'FACEBOOK':
-                        // Placeholder for Facebook profile analysis
-                        console.log('Facebook profile analysis is under development.');
-                        setType('Facebook profile');
-                        break;
+                        console.log(
+                            'Facebook profile analysis is under development.',
+                        )
+                        setType('Facebook profile')
+                        break
                     default:
-                        setError('Unknown mode.');
-                        break;
+                        setError('Unknown mode.')
+                        break
                 }
             }
         } catch (error) {
-            console.error('Error fetching initial response:', error);
+            console.error('Error fetching initial response:', error)
             setError(
-                'There was an issue fetching the initial response. Please try again later.'
-            );
-            setIsTyping(false);
+                'There was an issue fetching the initial response. Please try again later.',
+            )
+            setIsTyping(false)
         }
-    };
+    }
 
     const analyzeUrl = async (url: string) => {
         try {
@@ -115,16 +116,16 @@ export function Search(): JSX.Element {
                     headers: {
                         'Content-Type': 'application/x-www-form-urlencoded',
                     },
-                }
-            );
-            setDetailedResponse(response.data);
+                },
+            )
+            setDetailedResponse(response.data)
         } catch (error) {
-            console.error('Error analyzing URL:', error);
+            console.error('Error analyzing URL:', error)
             setError(
-                'There was an issue analyzing the URL. Please try again later.'
-            );
+                'There was an issue analyzing the URL. Please try again later.',
+            )
         }
-    };
+    }
 
     const analyzeSms = async (smsContent: string, smsHeader: string) => {
         try {
@@ -136,60 +137,58 @@ export function Search(): JSX.Element {
                 },
                 {
                     headers: { 'Content-Type': 'application/json' },
-                }
-            );
-            setDetailedResponse(response.data);
+                },
+            )
+            setDetailedResponse(response.data)
         } catch (error) {
-            console.error('Error analyzing SMS:', error);
+            console.error('Error analyzing SMS:', error)
             setError(
-                'There was an issue analyzing the SMS. Please try again later.'
-            );
+                'There was an issue analyzing the SMS. Please try again later.',
+            )
         }
-    };
+    }
 
-    const analyzeApk = async (filePath: string) => {
+    const analyzeApk = async (file: File) => {
         try {
-            // Fetch the file directly from the provided file path
-            const response = await fetch(filePath);
-            const blob = await response.blob();
-            const file = new File([blob], 'attached-file.apk', { type: blob.type });
-
-            const formData = new FormData();
-            formData.append('apk_file', file); // Append the APK file
+            const formData = new FormData()
+            formData.append('apk_file', file) // Append the APK file
 
             const apiResponse = await axios.post(
                 'https://ragnarok.nysaclan.com/api/v1/wall/analyze/apk',
                 formData,
                 {
                     headers: { 'Content-Type': 'multipart/form-data' },
-                }
-            );
-            setDetailedResponse(apiResponse.data);
+                },
+            )
+            setDetailedResponse(apiResponse.data)
         } catch (error) {
-            console.error('Error analyzing APK:', error);
+            console.error('Error analyzing APK:', error)
             setError(
-                'There was an issue analyzing the APK. Please try again later.'
-            );
+                'There was an issue analyzing the APK. Please try again later.',
+            )
         }
-    };
-
-    if (isTyping) {
-        return <LoadingState />;
     }
 
     const handleKeyDown = (e) => {
         if (e.key === 'Enter') {
-            e.preventDefault(); // Prevent default enter behavior
-            handleSubmit(e as unknown as FormEvent<HTMLFormElement>); // Call submit handler
+            e.preventDefault() // Prevent default enter behavior
+            handleSubmit(e as unknown as FormEvent<HTMLFormElement>) // Call submit handler
         }
-    };
+    }
 
     const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
-        e.preventDefault();
+        e.preventDefault()
         if (query.trim()) {
-            window.location.href = `/search?query=${encodeURIComponent(searchQuery)}`;
+            window.location.href = `/search?query=${encodeURIComponent(searchQuery)}`
         }
-    };
+    }
+
+    if (query == '' && attachment == null)
+        return (
+            <Box p={20}>
+                <ErrorWidget message={'Invalid page request.'} />
+            </Box>
+        )
 
     return (
         <Box
@@ -202,7 +201,7 @@ export function Search(): JSX.Element {
             <HStack justify="space-between" mb={5}>
                 <Link
                     onClick={() => {
-                        window.location.href = `/`;
+                        window.location.href = `/`
                     }}
                 >
                     <Box width={{ base: '150px', md: '200px' }}>
@@ -210,28 +209,22 @@ export function Search(): JSX.Element {
                     </Box>
                 </Link>
                 <Box flex={1} ml={5}>
-                    <InputGroup bgColor={'white'} shadow={'md'} size={'lg'}>
-                        <InputLeftAddon bg={'none'} color={'blue'}>
-                            <PiMagicWand size={24} />
-                        </InputLeftAddon>
-                        <Input
-                            value={searchQuery}
-                            onChange={(v) => setSearchQuery(v.target.value)}
-                            placeholder="Search..."
-                            borderLeft={'none'}
-                            focusBorderColor="black"
-                            borderRadius={'md'}
-                            _focus={{
-                                borderColor: 'black',
-                                borderImage: 'none',
-                                animation: 'none',
-                            }}
-                            onKeyDown={handleKeyDown}
-                        />
-                        <InputRightElement color={'blue'}>
-                            <PiArrowRightBold size={24} />
-                        </InputRightElement>
-                    </InputGroup>
+                    <SearchBar
+                        onSubmit={(type, data) => {
+                            if (type == 'ATTACHMENT') {
+                                analyzeApk(data as File).catch((err) => {
+                                    console.error('Error analyzing APK:', err)
+                                    setError(
+                                        'Failed to analyze the attached file. Please try again.',
+                                    )
+                                })
+                            } else if (data) {
+                                fetchInitialResponse(data as string)
+                            }
+                        }}
+                        initAttachment={attachment}
+                        initQuery={query}
+                    />
                 </Box>
             </HStack>
             {error && (
@@ -263,5 +256,5 @@ export function Search(): JSX.Element {
                 </Box>
             </Flex>
         </Box>
-    );
+    )
 }

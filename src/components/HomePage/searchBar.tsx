@@ -1,10 +1,12 @@
-import React, { useState, useEffect, FormEvent } from 'react';
+import React, { useState, useEffect, FormEvent, useImperativeHandle, forwardRef } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { FiSearch, FiPaperclip, FiX } from 'react-icons/fi';
-import { Box, IconButton } from '@chakra-ui/react';
+import { IconButton } from '@chakra-ui/react';
 
 interface SearchBarProps {
-  query: string;
-  setQuery: (query: string) => void;
+  initQuery?: string;
+  initAttachment?: File
+  onSubmit: (type: 'ATTACHMENT' | 'QUERY', data: File | string) => void;
 }
 
 const placeholders = [
@@ -15,49 +17,26 @@ const placeholders = [
   'e.g., https://facebook.com/username'
 ];
 
-const keyframes = `
-  @keyframes rotate-border {
-    from {
-      border-image-source: linear-gradient(45deg, #A7A3FF, #1509FF);
-    }
-    to {
-      border-image-source: linear-gradient(405deg, #A7A3FF, #1509FF);
-    }
-  }
-
-  @keyframes slide-up {
-    0% {
-      opacity: 0;
-      transform: translateY(20px);
-    }
-    100% {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
-`;
-
-export function SearchBar({ query, setQuery }: SearchBarProps) {
+export const SearchBar = forwardRef(({ onSubmit, initQuery, initAttachment }: SearchBarProps, ref) => {
   const [placeholder, setPlaceholder] = useState(placeholders[0]);
-  const [attachment, setAttachment] = useState<File | null>(null);
+  const [attachment, setAttachment] = useState<File | null>(initAttachment ?? null);
+  const [query, setQuery] = useState<string>(initQuery ?? '');
+  const navigate = useNavigate();
+
+  useImperativeHandle(ref, () => ({
+    updateQuery: (newQuery: string) => {
+      setQuery(newQuery);
+    }
+  }));
 
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (attachment) {
-      const formData = new FormData();
-      formData.append('apk_file', attachment);
-
-      // Use FormData to pass the file
-      window.location.href = `/search?attachment=${encodeURIComponent('file')}`;
+      onSubmit('ATTACHMENT', attachment);
+      navigate('/search', { state: { attachment } });
     } else if (query.trim()) {
-      window.location.href = `/search?query=${encodeURIComponent(query)}`;
-    }
-  };
-
-  const handleKeyDown = (e) => {
-    if (e.key === 'Enter') {
-      e.preventDefault(); // Prevent default enter behavior
-      handleSubmit(e as unknown as FormEvent<HTMLFormElement>); // Call submit handler
+      onSubmit('QUERY', query);
+      navigate('/search', { state: { query } });
     }
   };
 
@@ -76,7 +55,7 @@ export function SearchBar({ query, setQuery }: SearchBarProps) {
         const nextIndex = (currentIndex + 1) % placeholders.length;
         return placeholders[nextIndex];
       });
-    }, 1500); // Change placeholder every 1.5 seconds
+    }, 1500);
     return () => clearInterval(interval);
   }, []);
 
@@ -91,10 +70,6 @@ export function SearchBar({ query, setQuery }: SearchBarProps) {
     animation: 'rotate-border 3s linear infinite',
     transition: 'border-color 0.3s ease',
     position: 'relative',
-  };
-
-  const placeholderStyle: React.CSSProperties = {
-    animation: 'slide-up 0.5s ease-in-out',
   };
 
   const attachmentInfoStyle: React.CSSProperties = {
@@ -112,7 +87,6 @@ export function SearchBar({ query, setQuery }: SearchBarProps) {
 
   return (
     <div style={{ width: '100%', margin: '16px 0', position: 'relative' }}>
-      <style>{keyframes}</style>
       <form onSubmit={handleSubmit}>
         <input
           type="text"
@@ -120,17 +94,6 @@ export function SearchBar({ query, setQuery }: SearchBarProps) {
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           style={inputStyle}
-          onKeyDown={handleKeyDown}
-          onFocus={(e) => {
-            e.currentTarget.style.borderColor = 'black';
-            e.currentTarget.style.borderImage = 'none';
-            e.currentTarget.style.animation = 'none';
-          }}
-          onBlur={(e) => {
-            e.currentTarget.style.borderColor = 'transparent';
-            e.currentTarget.style.borderImage = 'linear-gradient(45deg, #A7A3FF, #1509FF) 1';
-            e.currentTarget.style.animation = 'rotate-border 3s linear infinite';
-          }}
         />
         {attachment && (
           <div style={attachmentInfoStyle}>
@@ -145,7 +108,7 @@ export function SearchBar({ query, setQuery }: SearchBarProps) {
             />
           </div>
         )}
-        <button type='submit'>
+        <button type="submit">
           <div style={{ position: 'absolute', top: '50%', right: '12px', transform: 'translateY(-50%)', color: '#888' }}>
             <FiSearch />
           </div>
@@ -163,6 +126,6 @@ export function SearchBar({ query, setQuery }: SearchBarProps) {
       </form>
     </div>
   );
-}
+});
 
 export default SearchBar;

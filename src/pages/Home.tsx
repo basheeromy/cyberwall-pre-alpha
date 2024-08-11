@@ -1,4 +1,4 @@
-import React, { FormEvent, useEffect, useState } from 'react'
+import React, { FormEvent, useEffect, useRef, useState } from 'react'
 import {
 	ChakraProvider,
 	Box,
@@ -21,10 +21,14 @@ import { PasteFromClipBoard } from '../components/HomePage/PasteFromClipBoard'
 import { NavBar } from '../components/NavBar'
 import { FiSearch } from 'react-icons/fi'
 import SearchBar from '../components/HomePage/searchBar'
+import { useNavigate } from 'react-router-dom'
 
 // Main Home Component
 const Home: React.FC = () => {
-	const [query, setQuery] = useState<string>('')
+	const navigate = useNavigate();
+	const searchBarRef = useRef(null);
+
+
 
 	return (
 		<ChakraProvider>
@@ -48,11 +52,21 @@ const Home: React.FC = () => {
 							<Logo />
 						</Box>
 						<Box width={['90%', '80%', '50%', '40%']} mt={4}>
-							<SearchBar query={query} setQuery={setQuery} />
+							<SearchBar
+								ref={searchBarRef}
+								onSubmit={(type, data) => {
+									if (type == 'ATTACHMENT') {
+										navigate('/search', { state: { data } });
+									} else {
+										navigate('/search', { state: { data } });
+									}
+								}} />
 						</Box>
 						<PasteFromClipBoard
 							onSuccessFullClipBoard={(data) => {
-								setQuery(data)
+								if (searchBarRef.current) {
+									searchBarRef.current.updateQuery('New query from parent');
+								}
 							}}
 						/>
 					</Flex>

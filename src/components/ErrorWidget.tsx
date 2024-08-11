@@ -1,5 +1,5 @@
 
-import { Box, Flex, Text, Icon } from '@chakra-ui/react';
+import { Box, Flex, Text, Icon, Button } from '@chakra-ui/react';
 import { FiAlertTriangle } from 'react-icons/fi';
 
 const ErrorWidget = ({ message }: { message: string }) => {

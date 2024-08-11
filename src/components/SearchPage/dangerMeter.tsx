@@ -66,7 +66,7 @@ export const DangerMeter = ({
                 nrOfLevels={3}
                 colors={['#4CAF50', '#FFC107', '#FF5722']}
                 arcWidth={0.3}
-                percent={Math.round(isLoading ? fakeValue : data?.score) / 100}
+                percent={Math.round(isLoading ? fakeValue : (data?.score ?? 0)) / 100}
                 textColor="#000000"
             />
             {isLoading ? (
@@ -90,7 +90,7 @@ export const DangerMeter = ({
 
 function getResultString(score: number): { message: string; color: string } {
     if (score == undefined || score == null)
-        return { message: 'unknown', color: 'black' }
+        return { message: '', color: 'black' }
     if (score < 34) return { message: 'Safe', color: 'green.500' }
     else if (score < 64)
         return { message: 'Not recommended', color: 'yellow.500' }
