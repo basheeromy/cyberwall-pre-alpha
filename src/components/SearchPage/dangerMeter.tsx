@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import {
     Box,
     VStack,
@@ -8,20 +8,13 @@ import {
     List,
     ListItem,
     ListIcon,
-    Input,
-    InputGroup,
-    InputRightElement,
-    InputLeftAddon,
-    Flex,
     chakra,
 } from '@chakra-ui/react'
 import GaugeChart from 'react-gauge-chart'
 import { Shimmer } from 'react-shimmer'
-import { FiCheck, FiInfo, FiSearch, FiShare2 } from 'react-icons/fi'
+import { FiCheck, FiInfo, FiShare2 } from 'react-icons/fi'
 import redShield from '../../assets/logo-red.png'
 import greenShield from '../../assets/logo-green.png'
-import { Logo } from '../Logo'
-import { PiArrowRightBold, PiMagicWand } from 'react-icons/pi'
 
 export const DangerMeter = ({
     isLoading,
