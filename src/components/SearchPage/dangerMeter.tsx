@@ -33,7 +33,7 @@ export const DangerMeter = ({
     type: string
 }) => {
     const [fakeValue, setFakeValue] = useState(10)
-    console.log('data ', data);
+
     useEffect(() => {
         if (isLoading) {
             const interval = setInterval(() => {

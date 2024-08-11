@@ -67,7 +67,6 @@ export function Search(): JSX.Element {
             )
 
             setResponseData(response.data)
-            setIsTyping(false)
             setError(null) // Clear any previous errors
 
             if (response.data.response) {
@@ -97,6 +96,8 @@ export function Search(): JSX.Element {
                         setError('Unknown mode.')
                         break
                 }
+                setIsTyping(false)
+
             }
         } catch (error) {
             console.error('Error fetching initial response:', error)
