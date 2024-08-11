@@ -5,7 +5,7 @@ import { IconButton } from '@chakra-ui/react';
 
 interface SearchBarProps {
   initQuery?: string;
-  initAttachment?: File
+  initAttachment?: File;
   onSubmit: (type: 'ATTACHMENT' | 'QUERY', data: File | string) => void;
 }
 
@@ -14,118 +14,153 @@ const placeholders = [
   'e.g., http://fakewebsite.com',
   'e.g., 9876543210',
   'e.g., 6611 9230 1293 1293',
-  'e.g., https://facebook.com/username'
+  'e.g., https://facebook.com/username',
 ];
 
-export const SearchBar = forwardRef(({ onSubmit, initQuery, initAttachment }: SearchBarProps, ref) => {
-  const [placeholder, setPlaceholder] = useState(placeholders[0]);
-  const [attachment, setAttachment] = useState<File | null>(initAttachment ?? null);
-  const [query, setQuery] = useState<string>(initQuery ?? '');
-  const navigate = useNavigate();
+export const SearchBar = forwardRef(
+  ({ onSubmit, initQuery, initAttachment }: SearchBarProps, ref) => {
+    const [placeholder, setPlaceholder] = useState(placeholders[0]);
+    const [attachment, setAttachment] = useState<File | null>(initAttachment ?? null);
+    const [query, setQuery] = useState<string>(initQuery ?? '');
+    const [fileInputKey, setFileInputKey] = useState<string>(''); // Added state to reset file input
+    const navigate = useNavigate();
 
-  useImperativeHandle(ref, () => ({
-    updateQuery: (newQuery: string) => {
-      setQuery(newQuery);
-    }
-  }));
+    useImperativeHandle(ref, () => ({
+      updateQuery: (newQuery: string) => {
+        setQuery(newQuery);
+      },
+    }));
 
-  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    if (attachment) {
-      onSubmit('ATTACHMENT', attachment);
-      navigate('/search', { state: { attachment } });
-    } else if (query.trim()) {
-      onSubmit('QUERY', query);
-      navigate('/search', { state: { query } });
-    }
-  };
+    const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+      e.preventDefault();
+      if (attachment) {
+        onSubmit('ATTACHMENT', attachment);
+        navigate('/search', { state: { attachment } });
+      } else if (query.trim()) {
+        onSubmit('QUERY', query);
+        navigate('/search', { state: { query } });
+      }
+    };
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files[0].type === "application/vnd.android.package-archive") {
-      setAttachment(e.target.files[0]);
-    } else {
-      alert('Only .apk files are allowed');
-    }
-  };
+    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+      if (e.target.files && e.target.files[0].type === 'application/vnd.android.package-archive') {
+        setAttachment(e.target.files[0]);
+        setQuery(''); // Clear query when a file is selected
+        setPlaceholder(''); // Remove the placeholder when a file is selected
+      } else {
+        alert('Only .apk files are allowed');
+      }
+    };
 
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setPlaceholder((prev) => {
-        const currentIndex = placeholders.indexOf(prev);
-        const nextIndex = (currentIndex + 1) % placeholders.length;
-        return placeholders[nextIndex];
-      });
-    }, 1500);
-    return () => clearInterval(interval);
-  }, []);
+    useEffect(() => {
+      if (!attachment) {
+        const interval = setInterval(() => {
+          setPlaceholder((prev) => {
+            const currentIndex = placeholders.indexOf(prev);
+            const nextIndex = (currentIndex + 1) % placeholders.length;
+            return placeholders[nextIndex];
+          });
+        }, 1500);
+        return () => clearInterval(interval);
+      } else {
+        setPlaceholder(''); // Ensure placeholder is cleared if a file is selected
+      }
+    }, [attachment]);
 
-  const inputStyle: React.CSSProperties = {
-    width: '100%',
-    padding: '12px 40px 12px 12px',
-    fontSize: '1rem',
-    border: '2.5px solid transparent',
-    borderImage: 'linear-gradient(45deg, #A7A3FF, #1509FF) 1',
-    borderRadius: '8px',
-    outline: 'none',
-    animation: 'rotate-border 3s linear infinite',
-    transition: 'border-color 0.3s ease',
-    position: 'relative',
-  };
+    const handleRemoveAttachment = () => {
+      setAttachment(null);
+      setPlaceholder(placeholders[0]); // Reset to the first placeholder when file is removed
+      setFileInputKey(Date.now().toString()); // Reset the file input key
+    };
 
-  const attachmentInfoStyle: React.CSSProperties = {
-    position: 'absolute',
-    top: '50%',
-    left: '12px',
-    transform: 'translateY(-50%)',
-    display: 'flex',
-    alignItems: 'center',
-    background: '#f0f0f0',
-    padding: '4px 8px',
-    borderRadius: '4px',
-    border: '1px solid #ccc',
-  };
+    const inputStyle: React.CSSProperties = {
+      width: '100%',
+      padding: '12px 40px 12px 12px',
+      fontSize: '1rem',
+      border: '2.5px solid transparent',
+      borderImage: 'linear-gradient(45deg, #A7A3FF, #1509FF) 1',
+      borderRadius: '8px',
+      outline: 'none',
+      animation: 'rotate-border 3s linear infinite',
+      transition: 'border-color 0.3s ease',
+      position: 'relative',
+    };
 
-  return (
-    <div style={{ width: '100%', margin: '16px 0', position: 'relative' }}>
-      <form onSubmit={handleSubmit}>
-        <input
-          type="text"
-          placeholder={placeholder}
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
-          style={inputStyle}
-        />
-        {attachment && (
-          <div style={attachmentInfoStyle}>
-            <FiPaperclip size={16} style={{ marginRight: '4px' }} />
-            {attachment.name}
-            <IconButton
-              aria-label="Remove attachment"
-              icon={<FiX />}
-              size="sm"
-              onClick={() => setAttachment(null)}
-              ml={2}
-            />
-          </div>
-        )}
-        <button type="submit">
-          <div style={{ position: 'absolute', top: '50%', right: '12px', transform: 'translateY(-50%)', color: '#888' }}>
-            <FiSearch />
-          </div>
-        </button>
-        <label htmlFor="file-upload" style={{ position: 'absolute', top: '50%', right: '40px', transform: 'translateY(-50%)', cursor: 'pointer', color: '#888' }}>
-          <FiPaperclip size={20} />
-        </label>
-        <input
-          id="file-upload"
-          type="file"
-          style={{ display: 'none' }}
-          accept=".apk"
-          onChange={handleFileChange}
-        />
-      </form>
-    </div>
-  );
-});
+    const attachmentInfoStyle: React.CSSProperties = {
+      position: 'absolute',
+      top: '50%',
+      left: '12px',
+      transform: 'translateY(-50%)',
+      display: 'flex',
+      alignItems: 'center',
+      background: '#f0f0f0',
+      padding: '4px 8px',
+      borderRadius: '4px',
+      border: '1px solid #ccc',
+    };
+
+    return (
+      <div style={{ width: '100%', margin: '16px 0', position: 'relative' }}>
+        <form onSubmit={handleSubmit}>
+          <input
+            type="text"
+            placeholder={placeholder}
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            style={inputStyle}
+            disabled={!!attachment} // Disable input when file is selected
+          />
+          {attachment && (
+            <div style={attachmentInfoStyle}>
+              <FiPaperclip size={16} style={{ marginRight: '4px' }} />
+              {attachment.name}
+              <IconButton
+                aria-label="Remove attachment"
+                icon={<FiX />}
+                size="sm"
+                onClick={handleRemoveAttachment}
+                ml={2}
+              />
+            </div>
+          )}
+          <button type="submit">
+            <div
+              style={{
+                position: 'absolute',
+                top: '50%',
+                right: '12px',
+                transform: 'translateY(-50%)',
+                color: '#888',
+              }}
+            >
+              <FiSearch />
+            </div>
+          </button>
+          <label
+            htmlFor="file-upload"
+            style={{
+              position: 'absolute',
+              top: '50%',
+              right: '40px',
+              transform: 'translateY(-50%)',
+              cursor: 'pointer',
+              color: '#888',
+            }}
+          >
+            <FiPaperclip size={20} />
+          </label>
+          <input
+            id="file-upload"
+            key={fileInputKey} // Use the dynamic key to force reset
+            type="file"
+            style={{ display: 'none' }}
+            accept=".apk"
+            onChange={handleFileChange}
+          />
+        </form>
+      </div>
+    );
+  }
+);
 
 export default SearchBar;
