@@ -1,20 +1,8 @@
 import { useState, useEffect } from 'react'
-import {
-    Box,
-    VStack,
-    HStack,
-    Text,
-    Heading,
-    List,
-    ListItem,
-    ListIcon,
-    chakra,
-    Flex,
-} from '@chakra-ui/react'
+import { Box, VStack, HStack, Text, Heading, Flex } from '@chakra-ui/react'
 import GaugeChart from 'react-gauge-chart'
 import { Shimmer } from 'react-shimmer'
-import { FiCheck, FiInfo, FiShare2 } from 'react-icons/fi'
-
+import { FiCheck, FiInfo, FiScissors, FiShare2 } from 'react-icons/fi'
 
 export const DangerMeter = ({
     isLoading,
@@ -28,23 +16,26 @@ export const DangerMeter = ({
     return (
         <Flex
             width={'100%'}
+            height={'70vh'}
             bgColor={'white'}
             p={5}
             borderRadius={'10'}
             shadow={'md'}
             alignItems={'center'}
             direction={'column'}
+            justifyContent={'center'}
         >
             {isLoading ? (
                 <Shimmer height={250} width={500} />
             ) : (
                 <Flex
                     textAlign="center"
-                    width={'100%'}
                     alignItems={'center'}
                     direction={'column'}
                     p={10}
                     paddingBottom={0}
+                    height={'100%'}
+                    width={'75%'}
                 >
                     <GaugeChart
                         id="gauge-chart"
@@ -93,7 +84,7 @@ export const DangerMeter = ({
             {isLoading ? (
                 <Shimmer height={40} width={200} />
             ) : (
-                <Text mt={2}>
+                <Text mt={2} textAlign={'center'}>
                     There's {Math.round(data?.score ?? 0)}% chance this is a
                     dangerous {type}
                 </Text>
@@ -113,24 +104,54 @@ function getResultString(score: number): { message: string; color: string } {
 }
 
 export const BoxWithShareCTA = () => (
-    <Box
-        width={'100%'}
-        bgColor={'white'}
-        p={5}
-        borderRadius={'10'}
-        shadow={'md'}
-    >
-        <HStack gap={5}>
-            <Box bgColor={'orange'} p={5} borderRadius={10}>
-                <FiShare2 color="white" size={48} />
-            </Box>
-            <VStack align={'start'} gap={0}>
-                <Heading size="md">Share this information</Heading>
-                <Text color="gray.500">
-                    Help your friends by sharing this information among your
-                    friends & family
-                </Text>
-            </VStack>
-        </HStack>
-    </Box>
+    <VStack flex={'1'} gap={'5'}>
+        <Item
+            title={'Share this information'}
+            description={
+                'Help your friends by sharing this information among your friends & family'
+            }
+            icon={<FiShare2 color="white" size={24} />}
+            bgColor={'teal'}
+        ></Item>
+        <Item
+            title={'Share this information'}
+            description={
+                'Help your friends by sharing this information among your friends & family'
+            }
+            icon={<FiCheck color="white" size={24} />}
+            bgColor={'indigo'}
+        ></Item>
+        <Item
+            title={'Share this information'}
+            description={
+                'Help your friends by sharing this information among your friends & family'
+            }
+            icon={<FiScissors color="white" size={24} />}
+            bgColor={'orange'}
+        ></Item>
+    </VStack>
 )
+
+function Item({ title, description, icon, bgColor }): JSX.Element {
+    return (
+        <Box
+            width={'100%'}
+            bgColor={'white'}
+            p={5}
+            borderRadius={'10'}
+            shadow={'md'}
+        >
+            <HStack gap={5}>
+                <Box bgColor={bgColor} p={5} borderRadius={10}>
+                    {icon}
+                </Box>
+                <VStack align={'start'} gap={0}>
+                    <Heading size="sm">{title}</Heading>
+                    <Text color="gray.500" fontSize={'14'}>
+                        {description}
+                    </Text>
+                </VStack>
+            </HStack>
+        </Box>
+    )
+}

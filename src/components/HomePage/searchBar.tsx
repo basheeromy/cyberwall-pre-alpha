@@ -115,6 +115,7 @@ export const SearchBar = forwardRef(
       outline: 'none',
       animation: 'rotate-border 3s linear infinite',
       position: 'relative',
+      backgroundColor: "white"
     };
 
     const attachmentInfoStyle: React.CSSProperties = {
@@ -145,7 +146,7 @@ export const SearchBar = forwardRef(
     };
 
     return (
-      <div style={{ width: '100%', margin: '16px 0', position: 'relative' }}>
+      <div style={{ width: '100%', margin: '16px 0', position: 'relative', }}>
         <form onSubmit={handleSubmit}>
           {/* Attachment Button Moved to the Left Side */}
           <label htmlFor="file-upload" style={fileUploadLabelStyle}>

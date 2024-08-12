@@ -209,39 +209,40 @@ export function Search(): JSX.Element {
             {error && (
                 <ErrorWidget message="Failed to process search. Check your network. If issue persists, contact support" />
             )}
-
-            <Box height={'50vh'}>
-                <DangerMeter
-                    isLoading={isTyping}
-                    data={detailedResponse}
-                    type={searchQueryType}
-                />
-            </Box>
-
-            <Flex direction={{ base: 'column', md: 'row' }} gap={5} mt={10}>
-                <Box flex={1} mb={{ base: 5, md: 0 }}>
-                    <VStack gap={5}>
+            <Flex as='main' gap={'5'} direction={'column'}>
+                <HStack align={'start'} gap={'5'}>
+                    <Box flex={'3'}>
                         <DangerMeter
                             isLoading={isTyping}
                             data={detailedResponse}
                             type={searchQueryType}
                         />
-                        <BoxWithShareCTA />
-                    </VStack>
-                </Box>
+                    </Box>
+
+                    <BoxWithShareCTA />
+
+                </HStack>
+                <HStack align={'start'} gap={'5'}>
+                    <ReasonsList
+                        isLoading={isTyping}
+                        report={detailedResponse?.report}
+                    />
+                    <ActionsList
+                        isLoading={isTyping}
+                        prevent={detailedResponse?.prevent}
+                    />
+                </HStack>
+            </Flex>
+
+
+
+            {/* <Flex direction={{ base: 'column', md: 'row' }} gap={5} mt={10}>
                 <Box flex={1}>
                     <VStack gap={5}>
-                        <ReasonsList
-                            isLoading={isTyping}
-                            report={detailedResponse?.report}
-                        />
-                        <ActionsList
-                            isLoading={isTyping}
-                            prevent={detailedResponse?.prevent}
-                        />
+
                     </VStack>
                 </Box>
-            </Flex>
+            </Flex> */}
         </Box>
     )
 }
