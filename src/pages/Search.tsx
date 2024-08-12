@@ -2,9 +2,7 @@ import axios from 'axios'
 import { FormEvent, useEffect, useState } from 'react'
 import { useLocation } from 'react-router-dom'
 import {
-    ActionsList,
     BoxWithShareCTA,
-    ReasonsList,
 } from '../components/SearchPage/dangerMeter'
 import {
     Box,
@@ -17,6 +15,8 @@ import { Logo } from '../components/Logo'
 import { DangerMeter } from '../components/SearchPage/dangerMeter'
 import ErrorWidget from '../components/ErrorWidget'
 import SearchBar from '../components/HomePage/searchBar'
+import { ReasonsList } from '../components/SearchPage/ReasonsList'
+import { ActionsList } from '../components/SearchPage/ActionsList'
 
 export function Search(): JSX.Element {
     const location = useLocation()
@@ -209,6 +209,14 @@ export function Search(): JSX.Element {
             {error && (
                 <ErrorWidget message="Failed to process search. Check your network. If issue persists, contact support" />
             )}
+
+            <Box height={'50vh'}>
+                <DangerMeter
+                    isLoading={isTyping}
+                    data={detailedResponse}
+                    type={searchQueryType}
+                />
+            </Box>
 
             <Flex direction={{ base: 'column', md: 'row' }} gap={5} mt={10}>
                 <Box flex={1} mb={{ base: 5, md: 0 }}>
