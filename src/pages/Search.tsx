@@ -1,7 +1,6 @@
 import axios from 'axios'
 import { FormEvent, useEffect, useState } from 'react'
-import { useLocation, useNavigate } from 'react-router-dom'
-import LoadingState from '../components/SearchPage/loadingStateComponent'
+import { useLocation } from 'react-router-dom'
 import {
     ActionsList,
     BoxWithShareCTA,
@@ -11,14 +10,9 @@ import {
     Box,
     Flex,
     HStack,
-    Input,
-    InputGroup,
-    InputLeftAddon,
-    InputRightElement,
     Link,
     VStack,
 } from '@chakra-ui/react'
-import { PiMagicWand, PiArrowRightBold } from 'react-icons/pi'
 import { Logo } from '../components/Logo'
 import { DangerMeter } from '../components/SearchPage/dangerMeter'
 import ErrorWidget from '../components/ErrorWidget'
@@ -29,13 +23,12 @@ export function Search(): JSX.Element {
     const { query = '', attachment = null } = location.state || {}
     const [error, setError] = useState<string | null>(null)
     const [isTyping, setIsTyping] = useState(true)
-    const [responseData, setResponseData] = useState<any>(null)
     const [detailedResponse, setDetailedResponse] = useState<any>(null)
     const [searchQueryType, setType] = useState<string>()
-    const [searchQuery, setSearchQuery] = useState<string>(query)
 
     useEffect(() => {
         if (attachment) {
+            setType('APK')
             analyzeApk(attachment).catch((err) => {
                 console.error('Error analyzing APK:', err)
                 setError(
@@ -66,7 +59,6 @@ export function Search(): JSX.Element {
                 },
             )
 
-            setResponseData(response.data)
             setError(null) // Clear any previous errors
 
             if (response.data.response) {
@@ -82,10 +74,7 @@ export function Search(): JSX.Element {
                         )
                         setType('SMS')
                         break
-                    case 'APK':
-                        // APK handling is already managed in the attachment case
-                        setType('APK')
-                        break
+
                     case 'FACEBOOK':
                         console.log(
                             'Facebook profile analysis is under development.',
@@ -162,25 +151,12 @@ export function Search(): JSX.Element {
                 },
             )
             setDetailedResponse(apiResponse.data)
+            setIsTyping(false)
         } catch (error) {
             console.error('Error analyzing APK:', error)
             setError(
                 'There was an issue analyzing the APK. Please try again later.',
             )
-        }
-    }
-
-    const handleKeyDown = (e) => {
-        if (e.key === 'Enter') {
-            e.preventDefault() // Prevent default enter behavior
-            handleSubmit(e as unknown as FormEvent<HTMLFormElement>) // Call submit handler
-        }
-    }
-
-    const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
-        e.preventDefault()
-        if (query.trim()) {
-            window.location.href = `/search?query=${encodeURIComponent(searchQuery)}`
         }
     }
 
@@ -213,12 +189,14 @@ export function Search(): JSX.Element {
                     <SearchBar
                         onSubmit={(type, data) => {
                             if (type == 'ATTACHMENT') {
+                                setType('APK');
                                 analyzeApk(data as File).catch((err) => {
                                     console.error('Error analyzing APK:', err)
                                     setError(
                                         'Failed to analyze the attached file. Please try again.',
                                     )
                                 })
+
                             } else if (data) {
                                 fetchInitialResponse(data as string)
                             }

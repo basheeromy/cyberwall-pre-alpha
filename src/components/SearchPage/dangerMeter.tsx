@@ -53,7 +53,7 @@ export const DangerMeter = ({
                 <Shimmer height={60} width={300} />
             ) : (
                 <Heading size="lg" mt={4}>
-                    This {type} header is
+                    This {type} is
                 </Heading>
             )}
             {isLoading && <Box height={5} />}
