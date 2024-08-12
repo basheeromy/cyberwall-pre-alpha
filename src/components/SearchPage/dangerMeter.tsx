@@ -10,6 +10,7 @@ import {
     ListIcon,
     chakra,
     Flex,
+    Avatar,
 } from '@chakra-ui/react'
 import GaugeChart from 'react-gauge-chart'
 import { Shimmer } from 'react-shimmer'
@@ -26,8 +27,6 @@ export const DangerMeter = ({
     data?: any
     type: string
 }) => {
-
-
     return (
         <Flex
             width={'100%'}
@@ -38,15 +37,41 @@ export const DangerMeter = ({
             alignItems={'center'}
             direction={'column'}
         >
-
-            {isLoading ? <Shimmer height={250} width={500} /> : <GaugeChart
-                id="gauge-chart"
-                nrOfLevels={3}
-                colors={['#4CAF50', '#FFC107', '#FF5722']}
-                arcWidth={0.3}
-                percent={Math.round(data?.score ?? 0) / 100}
-                textColor="#000000"
-            />}
+            {isLoading ? (
+                <Shimmer height={250} width={500} />
+            ) : (
+                <Flex
+                    textAlign="center"
+                    width={'100%'}
+                    alignItems={'center'}
+                    direction={'column'}
+                    p={10}
+                    paddingBottom={0}
+                >
+                    <GaugeChart
+                        id="gauge-chart"
+                        nrOfLevels={3}
+                        colors={['#4CAF50', '#FFC107', '#FF5722']}
+                        arcWidth={0.3}
+                        percent={Math.round(data?.score ?? 0) / 100}
+                        textColor="#000000"
+                        marginInPercent={0}
+                        hideText={true}
+                    />
+                    <Box
+                        display="flex"
+                        justifyContent="space-between"
+                        width={'100%'}
+                    >
+                        <Text color="#4CAF50" fontWeight="bold">
+                            Safe
+                        </Text>
+                        <Text color="#FF5722" fontWeight="bold">
+                            Dangerous
+                        </Text>
+                    </Box>
+                </Flex>
+            )}
             {isLoading && <Box height={5} />}
 
             {isLoading ? (
@@ -56,13 +81,24 @@ export const DangerMeter = ({
                     This {type} is
                 </Heading>
             )}
-            {isLoading && <Box height={5} />}
+            {isLoading ? (
+                <Box height={5} />
+            ) : (
+                <Heading
+                    size="xl"
+                    color={getResultString(data?.score)?.color}
+                    alignItems={'center'}
+                >
+                    {getResultString(data?.score)?.message}
+                </Heading>
+            )}
             {isLoading ? (
                 <Shimmer height={40} width={200} />
             ) : (
-                <Heading size="xl" color={getResultString(data?.score)?.color} alignItems={'center'}>
-                    {getResultString(data?.score)?.message}
-                </Heading>
+                <Text mt={2}>
+                    There's {Math.round(data?.score ?? 0)}% chance this is a
+                    dangerous {type}
+                </Text>
             )}
         </Flex>
     )
@@ -78,7 +114,13 @@ function getResultString(score: number): { message: string; color: string } {
     return { message: 'Dangerous', color: 'red.500' }
 }
 
-export const ReasonsList = ({ isLoading, report }: { isLoading: boolean, report: [] }) => (
+export const ReasonsList = ({
+    isLoading,
+    report,
+}: {
+    isLoading: boolean
+    report: []
+}) => (
     <Box
         width={'100%'}
         bgColor={'white'}
@@ -99,38 +141,43 @@ export const ReasonsList = ({ isLoading, report }: { isLoading: boolean, report:
         </HStack>
 
         <List spacing={3} mt={5} ml={4}>
-            {isLoading && [1, 2, 3, 4, 5, 6]?.map((item) => {
-                return (
-                    <ListItem key={item}>
-                        <HStack>
-                            <ListIcon as={FiInfo} color="red.500" />
-                            <Shimmer height={30} width={250} />
-
-                        </HStack>
-                    </ListItem>
-                )
-            })}
-            {!isLoading && report?.map((item) => {
-                return (
-                    <ListItem key={item}>
-                        <HStack>
-                            <ListIcon as={FiInfo} color="red.500" />
-                            {isLoading ? (
+            {isLoading &&
+                [1, 2, 3, 4, 5, 6]?.map((item) => {
+                    return (
+                        <ListItem key={item}>
+                            <HStack>
+                                <ListIcon as={FiInfo} color="red.500" />
                                 <Shimmer height={30} width={250} />
-                            ) : (
-                                <Text fontSize={18}>
-                                    {item}
-                                </Text>
-                            )}
-                        </HStack>
-                    </ListItem>
-                )
-            })}
+                            </HStack>
+                        </ListItem>
+                    )
+                })}
+            {!isLoading &&
+                report?.map((item) => {
+                    return (
+                        <ListItem key={item}>
+                            <HStack>
+                                <ListIcon as={FiInfo} color="red.500" />
+                                {isLoading ? (
+                                    <Shimmer height={30} width={250} />
+                                ) : (
+                                    <Text fontSize={18}>{item}</Text>
+                                )}
+                            </HStack>
+                        </ListItem>
+                    )
+                })}
         </List>
     </Box>
 )
 
-export const ActionsList = ({ isLoading, prevent }: { isLoading: boolean, prevent: any }) => (
+export const ActionsList = ({
+    isLoading,
+    prevent,
+}: {
+    isLoading: boolean
+    prevent: any
+}) => (
     <Box
         width={'100%'}
         bgColor={'white'}
@@ -151,35 +198,33 @@ export const ActionsList = ({ isLoading, prevent }: { isLoading: boolean, preven
         </HStack>
 
         <List spacing={3} mt={5} ml={4}>
-            {isLoading && [1, 2, 3, 4, 5, 6]?.map((item) => {
-                return (
-                    <ListItem key={item}>
-                        <HStack>
-                            <ListIcon as={FiInfo} color="red.500" />
-                            <Shimmer height={30} width={250} />
-
-                        </HStack>
-                    </ListItem>
-                )
-            })}
-            {!isLoading && prevent?.map((item) => {
-                return (
-                    <ListItem key={item}>
-                        <HStack>
-                            <ListIcon as={FiCheck} color="green.500" />
-
-                            {isLoading ? (
+            {isLoading &&
+                [1, 2, 3, 4, 5, 6]?.map((item) => {
+                    return (
+                        <ListItem key={item}>
+                            <HStack>
+                                <ListIcon as={FiInfo} color="red.500" />
                                 <Shimmer height={30} width={250} />
-                            ) : (
-                                <Text fontSize={18}>
-                                    {item}
-                                </Text>
-                            )}
-                        </HStack>
-                    </ListItem>
-                )
-            })}
+                            </HStack>
+                        </ListItem>
+                    )
+                })}
+            {!isLoading &&
+                prevent?.map((item) => {
+                    return (
+                        <ListItem key={item}>
+                            <HStack>
+                                <ListIcon as={FiCheck} color="green.500" />
 
+                                {isLoading ? (
+                                    <Shimmer height={30} width={250} />
+                                ) : (
+                                    <Text fontSize={18}>{item}</Text>
+                                )}
+                            </HStack>
+                        </ListItem>
+                    )
+                })}
         </List>
     </Box>
 )
