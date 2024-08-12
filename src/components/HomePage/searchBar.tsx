@@ -1,4 +1,4 @@
-import React, { useState, useEffect, FormEvent, useImperativeHandle, forwardRef } from 'react';
+import React, { useState, useEffect, FormEvent, useImperativeHandle, forwardRef, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FiSearch, FiPaperclip, FiX } from 'react-icons/fi';
 import { IconButton } from '@chakra-ui/react';
@@ -26,6 +26,7 @@ export const SearchBar = forwardRef(
     const [query, setQuery] = useState<string>(initQuery ?? '');
     const [fileInputKey, setFileInputKey] = useState<string>('');
     const [isFocused, setIsFocused] = useState(false); // State to track focus
+    const inputRef = useRef<HTMLInputElement | null>(null); // Reference to input element
 
     useImperativeHandle(ref, () => ({
       updateQuery: (newQuery: string) => {
@@ -74,6 +75,12 @@ export const SearchBar = forwardRef(
 
     const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
       e.preventDefault();
+
+      // Trigger onBlur manually
+      if (inputRef.current) {
+        inputRef.current.blur();
+      }
+
       if (attachment) {
         onSubmit('ATTACHMENT', attachment);
       } else if (query.trim()) {
@@ -153,6 +160,7 @@ export const SearchBar = forwardRef(
             onChange={handleFileChange}
           />
           <input
+            ref={inputRef} // Attach ref to input
             type="text"
             placeholder={attachment ? '' : displayedText + (cursorVisible ? '|' : '')} // Add the fake cursor
             value={query}

@@ -28,7 +28,7 @@ export function Search(): JSX.Element {
     const location = useLocation()
     const { query = '', attachment = null } = location.state || {}
     const [error, setError] = useState<string | null>(null)
-    const [isTyping, setIsTyping] = useState(false)
+    const [isTyping, setIsTyping] = useState(true)
     const [responseData, setResponseData] = useState<any>(null)
     const [detailedResponse, setDetailedResponse] = useState<any>(null)
     const [searchQueryType, setType] = useState<string>()

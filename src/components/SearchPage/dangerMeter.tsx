@@ -9,6 +9,7 @@ import {
     ListItem,
     ListIcon,
     chakra,
+    Flex,
 } from '@chakra-ui/react'
 import GaugeChart from 'react-gauge-chart'
 import { Shimmer } from 'react-shimmer'
@@ -25,43 +26,29 @@ export const DangerMeter = ({
     data?: any
     type: string
 }) => {
-    const [fakeValue, setFakeValue] = useState(10)
 
-    useEffect(() => {
-        if (isLoading) {
-            const interval = setInterval(() => {
-                setFakeValue((prev) => {
-                    // Increment logic that increases value without decimals and never converges to 100
-                    const increment = Math.max(
-                        Math.round((100 - prev) * 0.1),
-                        1,
-                    )
-                    const nextValue = prev + increment
-                    return nextValue >= 100 ? 10 : nextValue
-                })
-            }, 300)
-
-            return () => clearInterval(interval)
-        }
-    }, [isLoading])
 
     return (
-        <Box
+        <Flex
             width={'100%'}
             bgColor={'white'}
             p={5}
             borderRadius={'10'}
             shadow={'md'}
-            alignContent={'center'}
+            alignItems={'center'}
+            direction={'column'}
         >
-            <GaugeChart
+
+            {isLoading ? <Shimmer height={250} width={500} /> : <GaugeChart
                 id="gauge-chart"
                 nrOfLevels={3}
                 colors={['#4CAF50', '#FFC107', '#FF5722']}
                 arcWidth={0.3}
-                percent={Math.round(isLoading ? fakeValue : (data?.score ?? 0)) / 100}
+                percent={Math.round(data?.score ?? 0) / 100}
                 textColor="#000000"
-            />
+            />}
+            {isLoading && <Box height={5} />}
+
             {isLoading ? (
                 <Shimmer height={60} width={300} />
             ) : (
@@ -77,7 +64,7 @@ export const DangerMeter = ({
                     {getResultString(data?.score)?.message}
                 </Heading>
             )}
-        </Box>
+        </Flex>
     )
 }
 
