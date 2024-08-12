@@ -56,9 +56,9 @@ const Home: React.FC = () => {
 								ref={searchBarRef}
 								onSubmit={(type, data) => {
 									if (type == 'ATTACHMENT') {
-										navigate('/search', { state: { data } });
+										navigate('/search', { state: { attachment: data } });
 									} else {
-										navigate('/search', { state: { data } });
+										navigate('/search', { state: { query: data } });
 									}
 								}} />
 						</Box>

@@ -25,7 +25,7 @@ export const SearchBar = forwardRef(
     const [attachment, setAttachment] = useState<File | null>(initAttachment ?? null);
     const [query, setQuery] = useState<string>(initQuery ?? '');
     const [fileInputKey, setFileInputKey] = useState<string>('');
-    const navigate = useNavigate();
+    const [isFocused, setIsFocused] = useState(false); // State to track focus
 
     useImperativeHandle(ref, () => ({
       updateQuery: (newQuery: string) => {
@@ -76,10 +76,8 @@ export const SearchBar = forwardRef(
       e.preventDefault();
       if (attachment) {
         onSubmit('ATTACHMENT', attachment);
-        navigate('/search', { state: { attachment } });
       } else if (query.trim()) {
         onSubmit('QUERY', query);
-        navigate('/search', { state: { query } });
       }
     };
 
@@ -103,11 +101,12 @@ export const SearchBar = forwardRef(
       padding: '12px 40px 12px 40px', // Adjust padding for left icon space
       fontSize: '1rem',
       border: '2.5px solid transparent',
-      borderImage: 'linear-gradient(45deg, #A7A3FF, #1509FF) 1',
+      borderImage: isFocused
+        ? 'linear-gradient(45deg, grey, #000) 1' // Focused border color
+        : 'linear-gradient(45deg, #A7A3FF, #1509FF) 1', // Default border color
       borderRadius: '8px',
       outline: 'none',
       animation: 'rotate-border 3s linear infinite',
-      transition: 'border-color 0.3s ease',
       position: 'relative',
     };
 
@@ -158,6 +157,8 @@ export const SearchBar = forwardRef(
             placeholder={attachment ? '' : displayedText + (cursorVisible ? '|' : '')} // Add the fake cursor
             value={query}
             onChange={(e) => setQuery(e.target.value)}
+            onFocus={() => setIsFocused(true)} // Set focus state on focus
+            onBlur={() => setIsFocused(false)} // Remove focus state on blur
             style={inputStyle}
             disabled={!!attachment} // Disable input when file is selected
           />
@@ -181,7 +182,7 @@ export const SearchBar = forwardRef(
                 top: '50%',
                 right: '12px',
                 transform: 'translateY(-50%)',
-                color: 'blue',
+                color: attachment != undefined || query != '' ? 'blue' : "grey",
               }}
             >
               <FiSearch />
