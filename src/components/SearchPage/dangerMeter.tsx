@@ -46,6 +46,7 @@ export const DangerMeter = ({
                         textColor="#000000"
                         marginInPercent={0.02}
                         hideText={true}
+                        arcsLength={[0.2, 0.44, 0.36]}
                     />
                     <Box
                         display="flex"
