@@ -44,7 +44,7 @@ export const DangerMeter = ({
                         arcWidth={0.3}
                         percent={Math.round(data?.score ?? 0) / 100}
                         textColor="#000000"
-                        marginInPercent={0}
+                        marginInPercent={0.02}
                         hideText={true}
                     />
                     <Box
