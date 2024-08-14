@@ -9,6 +9,8 @@ import React, {
 import { useNavigate } from 'react-router-dom'
 import { FiSearch, FiPaperclip, FiX } from 'react-icons/fi'
 import { IconButton } from '@chakra-ui/react'
+import { FaAndroid } from 'react-icons/fa'
+import { PiAndroidLogo, PiAndroidLogoFill, PiAndroidLogoThin } from 'react-icons/pi'
 
 interface SearchBarProps {
   initQuery?: string
@@ -207,9 +209,10 @@ export const SearchBar = forwardRef(
           />
           {attachment && (
             <div style={attachmentInfoStyle}>
-              <FiPaperclip
+              <PiAndroidLogo
                 size={16}
                 style={{ marginRight: '4px' }}
+                color='green'
               />
               {attachment.name}
               <IconButton

@@ -1,13 +1,7 @@
 import axios from 'axios'
 import { FormEvent, useEffect, useState } from 'react'
 import { useLocation } from 'react-router-dom'
-import {
-    Box,
-    Flex,
-    HStack,
-    Link,
-    VStack,
-} from '@chakra-ui/react'
+import { Box, Flex, HStack, Link, VStack } from '@chakra-ui/react'
 import { Logo } from '../components/Logo'
 import { DangerMeter } from '../components/SearchPage/dangerMeter'
 import ErrorWidget from '../components/ErrorWidget'
@@ -72,19 +66,17 @@ export function Search(): JSX.Element {
                         )
                         setType('SMS')
                         break
-
                     case 'FACEBOOK':
-                        console.log(
-                            'Facebook profile analysis is under development.',
+                        await analyzeFacebookProfile(
+                            response.data.response.argument.facebook_profile,
                         )
                         setType('Facebook profile')
                         break
                     default:
-                        setError('Unknown mode.')
+                        setError('Unable to identify your search query!')
                         break
                 }
                 setIsTyping(false)
-
             }
         } catch (error) {
             console.error('Error fetching initial response:', error)
@@ -158,10 +150,42 @@ export function Search(): JSX.Element {
         }
     }
 
-    if (query == '' && attachment == null)
+    const analyzeFacebookProfile = async (facebookUrl: string) => {
+        try {
+            const response = await axios.post(
+                'https://ragnarok.nysaclan.com/api/v1/wall/analyze/fb',
+                {
+                    facebook_url: facebookUrl,
+                },
+                {
+                    headers: { 'Content-Type': 'application/json' },
+                },
+            )
+
+            if (response.data.error) {
+                setError(response.data.error)
+                setDetailedResponse(null)
+            } else {
+                setDetailedResponse(response.data)
+                setError(null)
+            }
+            setIsTyping(false)
+        } catch (error) {
+            console.error('Error analyzing Facebook profile:', error)
+            setError(
+                'There was an issue analyzing the Facebook profile. Please try again later.',
+            )
+            setIsTyping(false)
+        }
+    }
+
+    if (query === '' && attachment == null)
         return (
             <Box p={20}>
-                <ErrorWidget message={'Invalid page request.'} />
+                <ErrorWidget
+                    message={'Invalid page request.'}
+                    message2={error}
+                />
             </Box>
         )
 
@@ -187,17 +211,16 @@ export function Search(): JSX.Element {
                 <Box flex={2} ml={5}>
                     <SearchBar
                         onSubmit={(type, data) => {
-                            setError(null);
-                            setDetailedResponse(null);
-                            if (type == 'ATTACHMENT') {
-                                setType('APK');
+                            setError(null)
+                            setDetailedResponse(null)
+                            if (type === 'ATTACHMENT') {
+                                setType('APK')
                                 analyzeApk(data as File).catch((err) => {
                                     console.error('Error analyzing APK:', err)
                                     setError(
                                         'Failed to analyze the attached file. Please try again.',
                                     )
                                 })
-
                             } else if (data) {
                                 fetchInitialResponse(data as string)
                             }
@@ -208,9 +231,12 @@ export function Search(): JSX.Element {
                 </Box>
             </HStack>
             {error && (
-                <ErrorWidget message="Failed to process search. Check your network. If issue persists, contact support" />
+                <ErrorWidget
+                    message="Failed to process search. Check your network. If issue persists, contact support"
+                    message2={error}
+                />
             )}
-            <Flex as='main' gap={'5'} direction={'column'}>
+            <Flex as="main" gap={'5'} direction={'column'}>
                 <HStack align={'start'} gap={'5'}>
                     <Box flex={'6'}>
                         <DangerMeter
@@ -221,7 +247,6 @@ export function Search(): JSX.Element {
                     </Box>
 
                     <BoxWithShareCTA />
-
                 </HStack>
                 <HStack align={'start'} gap={'5'}>
                     <ReasonsList
