@@ -96,7 +96,7 @@ export const DangerMeter = ({
 function getResultString(score: number): { message: string; color: string } {
     if (score == undefined || score == null)
         return { message: '', color: 'black' }
-    if (score < 15) return { message: 'Safe', color: 'green.500' }
+    if (score < 20) return { message: 'Safe', color: 'green.500' }
     else if (score < 64)
         return { message: 'Not recommended', color: 'yellow.500' }
 
