@@ -70,7 +70,7 @@ export function Search(): JSX.Element {
                         break
                     case 'FACEBOOK':
                         await analyzeFacebookProfile(
-                            response.data.response.argument.facebook_profile,
+                            response.data.response.argument.facebook_url,
                         )
                         setType('Facebook profile')
                         break
