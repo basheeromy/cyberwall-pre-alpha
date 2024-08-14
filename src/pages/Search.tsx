@@ -2,9 +2,6 @@ import axios from 'axios'
 import { FormEvent, useEffect, useState } from 'react'
 import { useLocation } from 'react-router-dom'
 import {
-    BoxWithShareCTA,
-} from '../components/SearchPage/dangerMeter'
-import {
     Box,
     Flex,
     HStack,
@@ -17,6 +14,7 @@ import ErrorWidget from '../components/ErrorWidget'
 import SearchBar from '../components/HomePage/searchBar'
 import { ReasonsList } from '../components/SearchPage/ReasonsList'
 import { ActionsList } from '../components/SearchPage/ActionsList'
+import { BoxWithShareCTA } from '../components/SearchPage/BoxWithCTA'
 
 export function Search(): JSX.Element {
     const location = useLocation()
@@ -189,6 +187,8 @@ export function Search(): JSX.Element {
                 <Box flex={2} ml={5}>
                     <SearchBar
                         onSubmit={(type, data) => {
+                            setError(null);
+                            setDetailedResponse(null);
                             if (type == 'ATTACHMENT') {
                                 setType('APK');
                                 analyzeApk(data as File).catch((err) => {
@@ -234,16 +234,6 @@ export function Search(): JSX.Element {
                     />
                 </HStack>
             </Flex>
-
-
-
-            {/* <Flex direction={{ base: 'column', md: 'row' }} gap={5} mt={10}>
-                <Box flex={1}>
-                    <VStack gap={5}>
-
-                    </VStack>
-                </Box>
-            </Flex> */}
         </Box>
     )
 }

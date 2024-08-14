@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import { Box, VStack, HStack, Text, Heading, Flex } from '@chakra-ui/react'
 import GaugeChart from 'react-gauge-chart'
 import { Shimmer } from 'react-shimmer'
-import { FiCheck, FiInfo, FiScissors, FiShare2 } from 'react-icons/fi'
+import { FiCheck, FiInfo, FiPhone, FiPhoneCall, FiScissors, FiShare2 } from 'react-icons/fi'
 
 export const DangerMeter = ({
     isLoading,
@@ -103,55 +103,3 @@ function getResultString(score: number): { message: string; color: string } {
     return { message: 'Dangerous', color: 'red.500' }
 }
 
-export const BoxWithShareCTA = () => (
-    <VStack flex={'2'} gap={'5'}>
-        <Item
-            title={'Share this information'}
-            description={
-                'Help your friends by sharing this information among your friends & family'
-            }
-            icon={<FiShare2 color="white" size={24} />}
-            bgColor={'teal'}
-        ></Item>
-        <Item
-            title={'Share this information'}
-            description={
-                'Help your friends by sharing this information among your friends & family'
-            }
-            icon={<FiCheck color="white" size={24} />}
-            bgColor={'indigo'}
-        ></Item>
-        <Item
-            title={'Share this information'}
-            description={
-                'Help your friends by sharing this information among your friends & family'
-            }
-            icon={<FiScissors color="white" size={24} />}
-            bgColor={'orange'}
-        ></Item>
-    </VStack>
-)
-
-function Item({ title, description, icon, bgColor }): JSX.Element {
-    return (
-        <Box
-            width={'100%'}
-            bgColor={'white'}
-            p={5}
-            borderRadius={'10'}
-            shadow={'md'}
-        >
-            <HStack gap={5}>
-                <Box bgColor={bgColor} p={5} borderRadius={10}>
-                    {icon}
-                </Box>
-                <VStack align={'start'} gap={0}>
-                    <Heading size="sm">{title}</Heading>
-                    <Text color="gray.500" fontSize={'14'}>
-                        {description}
-                    </Text>
-                </VStack>
-            </HStack>
-        </Box>
-    )
-}
