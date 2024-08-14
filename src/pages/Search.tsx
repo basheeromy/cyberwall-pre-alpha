@@ -10,6 +10,8 @@ import { ReasonsList } from '../components/SearchPage/ReasonsList'
 import { ActionsList } from '../components/SearchPage/ActionsList'
 import { BoxWithShareCTA } from '../components/SearchPage/BoxWithCTA'
 
+//issue: State reload, fetching query from state not searchbox.
+
 export function Search(): JSX.Element {
     const location = useLocation()
     const { query = '', attachment = null } = location.state || {}
@@ -230,12 +232,17 @@ export function Search(): JSX.Element {
                     />
                 </Box>
             </HStack>
+
             {error && (
                 <ErrorWidget
-                    message="Failed to process search. Check your network. If issue persists, contact support"
-                    message2={error}
+                    message="Failed to process search. "
+                    message2={
+                        error ??
+                        'Check your network.If issue persists, contact support'
+                    }
                 />
             )}
+
             <Flex as="main" gap={'5'} direction={'column'}>
                 <HStack align={'start'} gap={'5'}>
                     <Box flex={'6'}>

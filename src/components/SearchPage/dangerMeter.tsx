@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react'
 import { Box, VStack, HStack, Text, Heading, Flex } from '@chakra-ui/react'
 import GaugeChart from 'react-gauge-chart'
 import { Shimmer } from 'react-shimmer'
-import { FiCheck, FiInfo, FiPhone, FiPhoneCall, FiScissors, FiShare2 } from 'react-icons/fi'
 
 export const DangerMeter = ({
     isLoading,
@@ -24,6 +23,7 @@ export const DangerMeter = ({
             direction={'column'}
             justifyContent={'center'}
         >
+
             {isLoading ? (
                 <Shimmer height={250} width={500} />
             ) : (
@@ -35,7 +35,6 @@ export const DangerMeter = ({
                     paddingBottom={0}
                     maxWidth={'75%'}
                     minWidth={'50%'}
-
                 >
                     <GaugeChart
                         id="gauge-chart"
@@ -102,4 +101,3 @@ function getResultString(score: number): { message: string; color: string } {
 
     return { message: 'Dangerous', color: 'red.500' }
 }
-
