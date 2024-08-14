@@ -15,7 +15,6 @@ export const DangerMeter = ({
 }) => {
     return (
         <Flex
-            width={'100%'}
             height={'70vh'}
             bgColor={'white'}
             p={5}
@@ -34,8 +33,9 @@ export const DangerMeter = ({
                     direction={'column'}
                     p={10}
                     paddingBottom={0}
-                    height={'100%'}
-                    width={'75%'}
+                    maxWidth={'75%'}
+                    minWidth={'50%'}
+
                 >
                     <GaugeChart
                         id="gauge-chart"
@@ -104,7 +104,7 @@ function getResultString(score: number): { message: string; color: string } {
 }
 
 export const BoxWithShareCTA = () => (
-    <VStack flex={'1'} gap={'5'}>
+    <VStack flex={'2'} gap={'5'}>
         <Item
             title={'Share this information'}
             description={

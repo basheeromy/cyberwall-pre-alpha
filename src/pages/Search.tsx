@@ -175,8 +175,9 @@ export function Search(): JSX.Element {
             bgColor={'#FAFAFA'}
             minHeight={'100vh'}
         >
-            <HStack justify="space-between" mb={5}>
+            <HStack justify="space-between" mb={5} display={'flex'}>
                 <Link
+                    flex={'3'}
                     onClick={() => {
                         window.location.href = `/`
                     }}
@@ -185,7 +186,7 @@ export function Search(): JSX.Element {
                         <Logo />
                     </Box>
                 </Link>
-                <Box flex={1} ml={5}>
+                <Box flex={2} ml={5}>
                     <SearchBar
                         onSubmit={(type, data) => {
                             if (type == 'ATTACHMENT') {
@@ -211,7 +212,7 @@ export function Search(): JSX.Element {
             )}
             <Flex as='main' gap={'5'} direction={'column'}>
                 <HStack align={'start'} gap={'5'}>
-                    <Box flex={'3'}>
+                    <Box flex={'6'}>
                         <DangerMeter
                             isLoading={isTyping}
                             data={detailedResponse}
