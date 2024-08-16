@@ -14,15 +14,14 @@ import {
     chakra
 } from '@chakra-ui/react';
 import { FiArrowRight } from 'react-icons/fi';
-import logo from '../../assets/hall-of-fame-logo.svg'
-
+import logo from '../../assets/hall-of-fame-logo.svg';
 
 interface LeaderboardItem {
     rank: number;
     name: string;
     points: number;
     contributions: number;
-    avatarUrl: string; // Added for profile pictures
+    avatarUrl: string; // Avatar URL still present in case it's needed elsewhere
 }
 
 const Leaderboard: React.FC = () => {
@@ -68,10 +67,7 @@ const Leaderboard: React.FC = () => {
                         {leaderboardData.map((user) => (
                             <Tr key={user.rank}>
                                 <Td>{user.rank}</Td>
-                                <Td display="flex" alignItems="center">
-                                    {/* <Avatar size="sm" src={user.avatarUrl} mr={3} /> */}
-                                    {user.name}
-                                </Td>
+                                <Td>{user.name}</Td>
                                 <Td>{user.points}</Td>
                                 <Td>{user.contributions}</Td>
                                 <Td>
