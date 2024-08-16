@@ -1,6 +1,6 @@
 import axios from 'axios'
 import { FormEvent, useEffect, useState } from 'react'
-import { useLocation } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
 import { Box, Flex, HStack, Link, VStack } from '@chakra-ui/react'
 import { Logo } from '../components/Logo'
 import { DangerMeter } from '../components/SearchPage/dangerMeter'
@@ -14,6 +14,7 @@ import { BoxWithShareCTA } from '../components/SearchPage/BoxWithCTA'
 
 export function Search(): JSX.Element {
     const location = useLocation()
+    const navigate = useNavigate()
     const { query = '', attachment = null } = location.state || {}
     const [error, setError] = useState<string | null>(null)
     const [isTyping, setIsTyping] = useState(true)
@@ -25,14 +26,19 @@ export function Search(): JSX.Element {
             setType('APK')
             analyzeApk(attachment).catch((err) => {
                 console.error('Error analyzing APK:', err)
-                setError(
-                    'Failed to analyze the attached file. Please try again.',
-                )
+                setError('Failed to analyze the attached file. Please try again.')
             })
         } else if (query) {
             fetchInitialResponse(query)
         }
     }, [])
+
+    const updateState = (newQuery: string, newAttachment: File | null) => {
+        navigate('.', {
+            replace: true,
+            state: { query: newQuery, attachment: newAttachment },
+        })
+    }
 
     const fetchInitialResponse = async (query: string) => {
         setIsTyping(true)
@@ -78,6 +84,7 @@ export function Search(): JSX.Element {
                         setError('Unable to identify your search query!')
                         break
                 }
+                updateState(query, attachment)
                 setIsTyping(false)
             }
         } catch (error) {
@@ -103,9 +110,7 @@ export function Search(): JSX.Element {
             setDetailedResponse(response.data)
         } catch (error) {
             console.error('Error analyzing URL:', error)
-            setError(
-                'There was an issue analyzing the URL. Please try again later.',
-            )
+            setError('There was an issue analyzing the URL. Please try again later.')
         }
     }
 
@@ -124,9 +129,7 @@ export function Search(): JSX.Element {
             setDetailedResponse(response.data)
         } catch (error) {
             console.error('Error analyzing SMS:', error)
-            setError(
-                'There was an issue analyzing the SMS. Please try again later.',
-            )
+            setError('There was an issue analyzing the SMS. Please try again later.')
         }
     }
 
@@ -143,12 +146,11 @@ export function Search(): JSX.Element {
                 },
             )
             setDetailedResponse(apiResponse.data)
+            updateState(query, file)
             setIsTyping(false)
         } catch (error) {
             console.error('Error analyzing APK:', error)
-            setError(
-                'There was an issue analyzing the APK. Please try again later.',
-            )
+            setError('There was an issue analyzing the APK. Please try again later.')
         }
     }
 
@@ -174,9 +176,7 @@ export function Search(): JSX.Element {
             setIsTyping(false)
         } catch (error) {
             console.error('Error analyzing Facebook profile:', error)
-            setError(
-                'There was an issue analyzing the Facebook profile. Please try again later.',
-            )
+            setError('There was an issue analyzing the Facebook profile. Please try again later.')
             setIsTyping(false)
         }
     }
