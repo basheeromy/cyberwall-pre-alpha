@@ -13,6 +13,7 @@ import { NotFound } from './pages/NotFound'
 import Home from './pages/Home'
 import Chat from './pages/Chat'
 import { Search } from './pages/Search'
+import Leaderboard from './components/LeaderBoard/LeaderBoard'
 
 const router: Router = createBrowserRouter([
 	{
@@ -34,12 +35,16 @@ const router: Router = createBrowserRouter([
 			},
 			{
 				path: 'chat',
-				element: <Chat />
+				element: <Chat />,
 			},
 			{
 				path: 'search',
-				element: <Search />
-			}
+				element: <Search />,
+			},
+			{
+				path: 'leaderboard',
+				element: <Leaderboard />,
+			},
 		],
 	},
 ])
