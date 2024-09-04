@@ -10,8 +10,6 @@ import { ReasonsList } from '../components/SearchPage/ReasonsList'
 import { ActionsList } from '../components/SearchPage/ActionsList'
 import { BoxWithShareCTA } from '../components/SearchPage/BoxWithCTA'
 
-//issue: State reload, fetching query from state not searchbox.
-
 export function Search(): JSX.Element {
     const location = useLocation()
     const navigate = useNavigate()
@@ -23,11 +21,19 @@ export function Search(): JSX.Element {
 
     useEffect(() => {
         if (attachment) {
-            setType('APK')
-            analyzeApk(attachment).catch((err) => {
-                console.error('Error analyzing APK:', err)
-                setError('Failed to analyze the attached file. Please try again.')
-            })
+            if (attachment.type === 'application/vnd.android.package-archive') {
+                setType('APK')
+                analyzeApk(attachment).catch((err) => {
+                    console.error('Error analyzing APK:', err)
+                    setError('Failed to analyze the attached file. Please try again.')
+                })
+            } else if (attachment.type.startsWith('image/')) {
+                setType('Image')
+                analyzeImage(attachment).catch((err) => {
+                    console.error('Error analyzing image:', err)
+                    setError('Failed to analyze the attached image. Please try again.')
+                })
+            }
         } else if (query) {
             fetchInitialResponse(query)
         }
@@ -56,7 +62,7 @@ export function Search(): JSX.Element {
                     headers: {
                         'Content-Type': 'application/json',
                     },
-                },
+                }
             )
 
             setError(null) // Clear any previous errors
@@ -70,13 +76,13 @@ export function Search(): JSX.Element {
                     case 'SMS':
                         await analyzeSms(
                             response.data.response.argument.sms_content,
-                            response.data.response.argument.sms_header,
+                            response.data.response.argument.sms_header
                         )
                         setType('SMS')
                         break
                     case 'FACEBOOK':
                         await analyzeFacebookProfile(
-                            response.data.response.argument.url,
+                            response.data.response.argument.url
                         )
                         setType('Facebook profile')
                         break
@@ -90,7 +96,7 @@ export function Search(): JSX.Element {
         } catch (error) {
             console.error('Error fetching initial response:', error)
             setError(
-                'There was an issue fetching the initial response. Please try again later.',
+                'There was an issue fetching the initial response. Please try again later.'
             )
             setIsTyping(false)
         }
@@ -105,7 +111,7 @@ export function Search(): JSX.Element {
                     headers: {
                         'Content-Type': 'application/x-www-form-urlencoded',
                     },
-                },
+                }
             )
             setDetailedResponse(response.data)
         } catch (error) {
@@ -124,7 +130,7 @@ export function Search(): JSX.Element {
                 },
                 {
                     headers: { 'Content-Type': 'application/json' },
-                },
+                }
             )
             setDetailedResponse(response.data)
         } catch (error) {
@@ -143,7 +149,7 @@ export function Search(): JSX.Element {
                 formData,
                 {
                     headers: { 'Content-Type': 'multipart/form-data' },
-                },
+                }
             )
             setDetailedResponse(apiResponse.data)
             updateState(query, file)
@@ -163,7 +169,7 @@ export function Search(): JSX.Element {
                 },
                 {
                     headers: { 'Content-Type': 'application/json' },
-                },
+                }
             )
 
             if (response.data.error) {
@@ -178,6 +184,42 @@ export function Search(): JSX.Element {
             console.error('Error analyzing Facebook profile:', error)
             setError('There was an issue analyzing the Facebook profile. Please try again later.')
             setIsTyping(false)
+        }
+    }
+
+    const analyzeImage = async (file: File) => {
+        try {
+            const formData = new FormData()
+            formData.append('image', file) // Append the image file
+
+            const apiResponse = await axios.post(
+                'https://ragnarok.nysaclan.com/api/v1/wall/chat',
+                formData,
+                {
+                    headers: { 'Content-Type': 'multipart/form-data' },
+                }
+            )
+
+            if (apiResponse.data.response) {
+                switch (apiResponse.data.response.mode) {
+                    case 'SMS':
+                        await analyzeSms(
+                            apiResponse.data.response.argument.sms_content,
+                            apiResponse.data.response.argument.sms_header
+                        )
+                        setType('SMS')
+                        break
+                    default:
+                        setError('Operation not supported for this image type.')
+                        setDetailedResponse(null)
+                        break
+                }
+                updateState(query, file)
+                setIsTyping(false)
+            }
+        } catch (error) {
+            console.error('Error analyzing image:', error)
+            setError('There was an issue analyzing the image. Please try again later.')
         }
     }
 
@@ -216,13 +258,21 @@ export function Search(): JSX.Element {
                             setError(null)
                             setDetailedResponse(null)
                             if (type === 'ATTACHMENT') {
-                                setType('APK')
-                                analyzeApk(data as File).catch((err) => {
-                                    console.error('Error analyzing APK:', err)
-                                    setError(
-                                        'Failed to analyze the attached file. Please try again.',
-                                    )
-                                })
+                                if (data instanceof File) {
+                                    if (data.type === 'application/vnd.android.package-archive') {
+                                        setType('APK')
+                                        analyzeApk(data).catch((err) => {
+                                            console.error('Error analyzing APK:', err)
+                                            setError('Failed to analyze the attached file. Please try again.')
+                                        })
+                                    } else if (data.type.startsWith('image/')) {
+                                        setType('Image')
+                                        analyzeImage(data).catch((err) => {
+                                            console.error('Error analyzing image:', err)
+                                            setError('Failed to analyze the attached image. Please try again.')
+                                        })
+                                    }
+                                }
                             } else if (data) {
                                 fetchInitialResponse(data as string)
                             }
@@ -238,7 +288,7 @@ export function Search(): JSX.Element {
                     message="Failed to process search. "
                     message2={
                         error ??
-                        'Check your network.If issue persists, contact support'
+                        'Check your network. If the issue persists, contact support'
                     }
                 />
             )}
