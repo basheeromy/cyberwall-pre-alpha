@@ -23,10 +23,10 @@ export const ActionsList = ({
             <chakra.img src={greenShield} />
             <VStack align={'start'} gap={0}>
                 <Heading size="md" color="green.500">
-                    What to do next?
+                    Why
                 </Heading>
                 <Text fontSize="sm" color="gray.500">
-                    Suggestions on what you can do next to mitigate this
+                    Few reasons why we think this is trustable
                 </Text>
             </VStack>
         </HStack>

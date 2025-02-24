@@ -14,6 +14,7 @@
     "@emotion/styled": "^11.13.0",
     "axios": "^1.7.2",
     "framer-motion": "^11.3.22",
+    "lucide-react": "^0.475.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-gauge-chart": "^0.5.1",

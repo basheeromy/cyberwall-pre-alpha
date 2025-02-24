@@ -17,18 +17,18 @@ const theme = extendTheme({
 		// Optionally define more colors here
 	},
 	fonts: {
-		heading: `'Red Hat Display', sans-serif`,
-		body: `'Red Hat Display', sans-serif`,
+		heading: `'Anek Malayalam', sans-serif`,
+		body: `'Anek Malayalam', sans-serif`,
 	},
 	styles: {
 		global: {
 			'html, body': {
-				fontFamily: `'Red Hat Display', sans-serif`,
+				fontFamily: `'Anek Malayalam', sans-serif`,
 				fontSize: 'lg', // Apply the default body text size globally
 			},
 			a: {
 				fontSize: 'lg', // Set the default font size for links
-				fontFamily: `'Red Hat Display', sans-serif`,
+				fontFamily: `'Anek Malayalam', sans-serif`,
 			},
 		},
 	},
@@ -40,12 +40,12 @@ const theme = extendTheme({
 		},
 		Button: {
 			baseStyle: {
-				fontFamily: `'Red Hat Display', sans-serif`,
+				fontFamily: `'Anek Malayalam', sans-serif`,
 			},
 		},
 		Input: {
 			baseStyle: {
-				fontFamily: `'Red Hat Display', sans-serif`,
+				fontFamily: `'Anek Malayalam', sans-serif`,
 			},
 		},
 	},

@@ -8,7 +8,7 @@ export const ReasonsList = ({
     report,
 }: {
     isLoading: boolean
-    report: []
+    report: string[]
 }) => (
     <Box
         width={'100%'}
