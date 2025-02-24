@@ -23,6 +23,43 @@ import { AlertCircle, ArrowRight, LucideAArrowDown } from 'lucide-react'
 import { ArrowDown } from 'lucide-react'
 import { PiTranslate } from 'react-icons/pi'
 
+const dummy = {
+    reference: 'user_id/request_id',
+    api_request_id: 83,
+    final_score: 80,
+    score_content: {
+        en: 'This SMS header is  Trustable ',
+        ml: 'ഈ SMS ഹെഡർ വിശ്വാസയോഗ്യമാണ്',
+    },
+    action: {
+        en: {
+            content: 'You can visit kerala police website to check this',
+            url: 'https://keralapolice.gov.in',
+            action: 'Visit Website',
+        },
+        ml: {
+            content:
+                'ഇത് പരിശോധിക്കാൻ കേരള പോലീസ് വെബ്സൈറ്റ് സന്ദർശിക്കാവുന്നതാണ്',
+            url: 'https://keralapolice.gov.in',
+            action: 'വെബ്സൈറ്റ് സന്ദർശിക്കുക',
+        },
+    },
+    reports: {
+        en: {
+            report: [
+                'keralapolice.gov.in is a trustworthy domain.',
+                'keralapolice.gov.in is a trustworthy domain.',
+            ],
+        },
+        ml: {
+            report: [
+                'keralapolice.gov.in എന്ന ഡൊമെയ്ൻ ഒരു വിശ്വസനീയ ഡൊമെയ്‌നാണ്.',
+                'keralapolice.gov.in എന്ന ഡൊമെയ്ൻ ഒരു വിശ്വസനീയ ഡൊമെയ്‌നാണ്.',
+            ],
+        },
+    },
+} //@basheer -  This is current dummy structure of response API.
+
 export function Search(): JSX.Element {
     const location = useLocation()
     const navigate = useNavigate()
@@ -122,7 +159,7 @@ export function Search(): JSX.Element {
                                     alignItems={'center'}
                                     alignContent={'center'}
                                     align="center"
-                                    justifyContent={"center"}
+                                    justifyContent={'center'}
                                 >
                                     <Link>View Details In TRAI Website</Link>
                                     <ArrowRight size={18} />
@@ -136,7 +173,7 @@ export function Search(): JSX.Element {
                                 fontSize="sm"
                                 align={'center'}
                                 width={'100%'}
-                                justifyContent={"center"}
+                                justifyContent={'center'}
                             >
                                 <AlertCircle size={16} />
                                 <Text>
