@@ -115,7 +115,7 @@ const SearchBar = forwardRef(
       }
     }, [])
 
-    const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+    const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
       e.preventDefault()
 
       if (inputRef.current) {

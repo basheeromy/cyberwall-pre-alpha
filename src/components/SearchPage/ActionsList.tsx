@@ -7,9 +7,11 @@ import greenShield from '../../assets/logo-green.png'
 
 export const ActionsList = ({
     isLoading,
+    lang,
     prevent,
 }: {
     isLoading: boolean
+    lang:string;
     prevent: any
 }) => (
     <Box
@@ -26,7 +28,14 @@ export const ActionsList = ({
                     Why
                 </Heading>
                 <Text fontSize="sm" color="gray.500">
-                    Few reasons why we think this is trustable
+                    {lang === 'മലയാളം പതിപ്പ് ' &&
+                        <>ഇത് വിശ്വസനീയമാണെന്ന് ഞങ്ങൾ കരുതുന്നതിൻ്റെ കുറച്ച് കാരണങ്ങൾ</>
+
+                    } {lang === 'English Version' &&
+                        <>Few reasons why we think this is trustable</>
+                    }
+
+
                 </Text>
             </VStack>
         </HStack>
@@ -43,8 +52,24 @@ export const ActionsList = ({
                         </ListItem>
                     )
                 })}
-            {!isLoading &&
-                prevent?.map((item) => {
+            {!isLoading && lang === 'English Version' &&
+                prevent?.en?.report?.map((item) => {
+                    return (
+                        <ListItem key={item}>
+                            <HStack>
+                                <ListIcon as={FiCheck} color="green.500" />
+
+                                {isLoading ? (
+                                    <Shimmer height={30} width={250} />
+                                ) : (
+                                    <Text fontSize={18}>{item}</Text>
+                                )}
+                            </HStack>
+                        </ListItem>
+                    )
+                })}
+                {!isLoading && lang === 'മലയാളം പതിപ്പ് ' &&
+                prevent?.ml?.report?.map((item) => {
                     return (
                         <ListItem key={item}>
                             <HStack>
