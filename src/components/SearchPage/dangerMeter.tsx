@@ -68,8 +68,10 @@ export const DangerMeter = ({
                 <Shimmer height={60} width={300} />
             ) : (
                 <Heading size="md" mt={4}>
-                    {lang === 'English Version' && <>Trust score is {data?.final_score} and it is considered as</>}
-                    {lang === 'മലയാളം പതിപ്പ് ' && <Text fontFamily="Noto Sans Malayalam">ട്രസ്റ്റ് സ്കോർ  {data?.final_score}  ആണ്, അത്  കണക്കാക്കുന്നു</Text>}
+                    {/* {lang === 'English Version' && <>Trust score is {data?.final_score} and it is considered as</>} */}
+                    {lang === 'English Version' && <>NA</>}
+                    {/* {lang === 'മലയാളം പതിപ്പ് ' && <Text fontFamily="Noto Sans Malayalam">ട്രസ്റ്റ് സ്കോർ  {data?.final_score}  ആണ്, അത്  കണക്കാക്കുന്നു</Text>} */}
+                    {lang === 'മലയാളം പതിപ്പ് ' && <Text fontFamily="Noto Sans Malayalam">NA</Text>}
 
                 </Heading>
             )}
@@ -88,7 +90,8 @@ export const DangerMeter = ({
                 <Shimmer height={40} width={200} />
             ) : (
                 <Text mt={2} textAlign={'center'}>
-                    {lang === 'മലയാളം പതിപ്പ് ' &&  <Text fontFamily="Noto Sans Malayalam">{data.score_content.ml}</Text>}
+                    {/* {lang === 'മലയാളം പതിപ്പ് ' &&  <Text fontFamily="Noto Sans Malayalam">{data.score_content.ml}</Text>} */}
+                    {lang === 'മലയാളം പതിപ്പ് ' && <Text fontFamily="Noto Sans Malayalam">ബാക്കെൻഡ് ബന്ധിപ്പിച്ചിട്ടില്ല. സാങ്കേതിക ടീമിനെ ബന്ധപ്പെടുക</Text>}
                     {lang === 'English Version' && data.score_content.en}
                 </Text>
             )}

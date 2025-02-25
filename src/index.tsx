@@ -14,6 +14,8 @@ import Home from './pages/Home'
 import Chat from './pages/Chat'
 import { Search } from './pages/Search'
 import Leaderboard from './components/LeaderBoard/LeaderBoard'
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const router: Router = createBrowserRouter([
 	{
@@ -58,6 +60,7 @@ root.render(
 		<ChakraProvider theme={theme}>
 			<ColorModeScript />
 			<RouterProvider router={router} />
+			<ToastContainer />
 		</ChakraProvider>
 	</React.StrictMode>,
 )

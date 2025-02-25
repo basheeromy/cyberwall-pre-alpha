@@ -148,8 +148,8 @@ export function Search(): JSX.Element {
                                 bg="green.50"
                             >
                                 <Text color="gray.800">
-                                    {v === 'English Version' && response.action.en.content}
-                                    {v === 'മലയാളം പതിപ്പ് ' && response.action.ml.content}
+                                    {v === 'English Version' && response?.action.en.content}
+                                    {v === 'മലയാളം പതിപ്പ് ' && response?.action.ml.content}
                                 </Text>
 
                                 <Flex

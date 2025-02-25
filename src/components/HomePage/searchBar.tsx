@@ -6,6 +6,7 @@ import React, {
   forwardRef,
   useRef,
 } from 'react'
+import { toast } from 'react-toastify'
 import { FiSearch, FiPaperclip, FiX } from 'react-icons/fi'
 import { IconButton, Text } from '@chakra-ui/react'
 import { PiAndroidLogo } from 'react-icons/pi'
@@ -117,16 +118,41 @@ const SearchBar = forwardRef(
 
     const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
       e.preventDefault()
+      try {
+        const resp = await fetch('https://cwapi.nysaclan.com/core/v1/trustanalysis/', {
+          method: 'POST',
+          headers: {
+        'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+        "input": "VL-ViCARE",
+        "reference": "3l3213lkj321312312",
+        "channel": "polapp"
+          }),
+        })
 
-      if (inputRef.current) {
-        inputRef.current.blur()
+        if (!resp.ok) {
+          console.log("failed to submit data")
+          toast.error('Failed to submit data')
+          return
+        }
+      } catch (error) {
+        console.error('Error:', error)
+        toast.error('Failed to submit data due to network error')
       }
 
-      if (attachment) {
-        onSubmit('ATTACHMENT', attachment)
-      } else if (query.trim()) {
-        onSubmit('QUERY', query)
-      }
+
+      
+
+      // if (inputRef.current) {
+      //   inputRef.current.blur()
+      // }
+
+      // if (attachment) {
+      //   onSubmit('ATTACHMENT', attachment)
+      // } else if (query.trim()) {
+      //   onSubmit('QUERY', query)
+      // }
     }
 
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
