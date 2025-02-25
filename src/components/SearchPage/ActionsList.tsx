@@ -52,7 +52,8 @@ export const ActionsList = ({
                         </ListItem>
                     )
                 })}
-            {!isLoading && lang === 'English Version' &&
+                <>NA</>
+            {/* {!isLoading && lang === 'English Version' &&
                 prevent?.en?.report?.map((item) => {
                     return (
                         <ListItem key={item}>
@@ -83,7 +84,7 @@ export const ActionsList = ({
                             </HStack>
                         </ListItem>
                     )
-                })}
+                })} */}
         </List>
     </Box>
 )

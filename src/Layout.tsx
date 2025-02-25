@@ -2,6 +2,7 @@ import { FunctionComponent, ReactElement } from 'react'
 import { Outlet } from 'react-router-dom'
 import { Box } from '@chakra-ui/react'
 
+
 import { NavBar } from './components/NavBar'
 
 export const Layout: FunctionComponent = (): ReactElement => {
@@ -15,6 +16,7 @@ export const Layout: FunctionComponent = (): ReactElement => {
 			<Box p={8}>
 				<Outlet />
 			</Box>
+			
 
 			{/* <Footer /> */}
 		</Box>
