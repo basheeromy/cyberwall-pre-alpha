@@ -22,11 +22,12 @@ import greenShield from '../assets/logo-green.png'
 import { AlertCircle, ArrowRight, LucideAArrowDown } from 'lucide-react'
 import { ArrowDown } from 'lucide-react'
 import { PiTranslate } from 'react-icons/pi'
+import { isString } from 'lodash'
 
-const dummy = {
+const response = {
     reference: 'user_id/request_id',
     api_request_id: 83,
-    final_score: 80,
+    final_score: 90,
     score_content: {
         en: 'This SMS header is  Trustable ',
         ml: 'ഈ SMS ഹെഡർ വിശ്വാസയോഗ്യമാണ്',
@@ -68,6 +69,14 @@ export function Search(): JSX.Element {
     const [isTyping, setIsTyping] = useState(false) //change back to true
     const [detailedResponse, setDetailedResponse] = useState<any>(null)
     const [searchQueryType, setType] = useState<string>()
+
+    useEffect(() => {
+        if (query) {
+            console.log('query', query)
+        } else if (attachment) {
+            console.log('attachment', attachment)
+        }
+    }, [query])
 
     return (
         <Box
@@ -124,8 +133,9 @@ export function Search(): JSX.Element {
                             {/* Reusing the existing DangerMeter component */}
                             <DangerMeter
                                 isLoading={isTyping}
-                                data={detailedResponse}
-                                type={searchQueryType}
+                                // data={detailedResponse}
+                                data={response}
+                                lang={v}
                             />
 
                             {/* Info box similar to the one in the image */}
@@ -138,19 +148,8 @@ export function Search(): JSX.Element {
                                 bg="green.50"
                             >
                                 <Text color="gray.800">
-                                    The SMS Header,{' '}
-                                    <Text as="span" fontWeight="bold">
-                                        SBINHDR
-                                    </Text>{' '}
-                                    has a score of{' '}
-                                    <Text as="span" fontWeight="bold">
-                                        89/100
-                                    </Text>{' '}
-                                    and it is{' '}
-                                    <Text as="span" fontWeight="bold">
-                                        safe
-                                    </Text>{' '}
-                                    as per our checks.
+                                    {v === 'English Version' && response.action.en.content}
+                                    {v === 'മലയാളം പതിപ്പ് ' && response.action.ml.content}
                                 </Text>
 
                                 <Flex
@@ -161,7 +160,10 @@ export function Search(): JSX.Element {
                                     align="center"
                                     justifyContent={'center'}
                                 >
-                                    <Link>View Details In TRAI Website</Link>
+                                    <Link>
+                                        {v === 'English Version' && response.action.en.action}
+                                        {v === 'മലയാളം പതിപ്പ് ' && response.action.ml.action}
+                                    </Link>
                                     <ArrowRight size={18} />
                                 </Flex>
                             </Box>
@@ -186,11 +188,8 @@ export function Search(): JSX.Element {
                             {/* Reusing the existing ReasonsList component */}
                             <ActionsList
                                 isLoading={isTyping}
-                                prevent={[
-                                    'Reason 1 on why this is trustable',
-                                    'Reason 2 on why this is trustable',
-                                    'Reason 3 on why this is trustable',
-                                ]}
+                                lang={v}
+                                prevent={response.reports}
                             />
                         </VStack>
                     ))}

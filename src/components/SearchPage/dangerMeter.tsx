@@ -6,13 +6,13 @@ import { Shimmer } from 'react-shimmer'
 export const DangerMeter = ({
     isLoading,
     data,
-    type,
+    lang,
 }: {
     isLoading: boolean
     data?: any
-    type: string
+    lang: string
 }) => {
-    console.log('data ', data?.response?.score);
+    console.log('data ', data);
     return (
         <Flex
             width={'100%'}
@@ -42,11 +42,11 @@ export const DangerMeter = ({
                         nrOfLevels={3}
                         colors={['#FF5722', '#FFC107', '#4CAF50']}
                         arcWidth={0.3}
-                        percent={Math.round((data?.score ?? 100) / 100)}
+                        percent={Math.min((data?.final_score ?? 100) / 100)}
                         textColor="#000000"
                         marginInPercent={0.02}
                         hideText={true}
-                        arcsLength={[0.36, 0.44, 0.2]}
+                        arcsLength={[0.35, 0.35, 0.3]}
                     />
                     <Box
                         display="flex"
@@ -67,8 +67,10 @@ export const DangerMeter = ({
             {isLoading ? (
                 <Shimmer height={60} width={300} />
             ) : (
-                <Heading size="lg" mt={4}>
-                    This {type} is
+                <Heading size="md" mt={4}>
+                    {lang === 'English Version' && <>Trust score is {data?.final_score} and it is considered as</>}
+                    {lang === 'മലയാളം പതിപ്പ് ' && <Text fontFamily="Noto Sans Malayalam">ട്രസ്റ്റ് സ്കോർ  {data?.final_score}  ആണ്, അത്  കണക്കാക്കുന്നു</Text>}
+
                 </Heading>
             )}
             {isLoading ? (
@@ -76,18 +78,18 @@ export const DangerMeter = ({
             ) : (
                 <Heading
                     size="xl"
-                    color={getResultString(data?.score)?.color}
+                    color={getResultString(data?.final_score)?.color}
                     alignItems={'center'}
                 >
-                    {getResultString(data?.score)?.message}
+                    {getResultString(data?.final_score)?.message}
                 </Heading>
             )}
             {isLoading ? (
                 <Shimmer height={40} width={200} />
             ) : (
                 <Text mt={2} textAlign={'center'}>
-                    There's {Math.round((type == 'Url' || type == 'SMS') ? data.response.score : data?.score ?? 0)}% chance this is a
-                    dangerous {type}
+                    {lang === 'മലയാളം പതിപ്പ് ' &&  <Text fontFamily="Noto Sans Malayalam">{data.score_content.ml}</Text>}
+                    {lang === 'English Version' && data.score_content.en}
                 </Text>
             )}
         </Flex>
@@ -97,9 +99,13 @@ export const DangerMeter = ({
 function getResultString(score: number): { message: string; color: string } {
     if (score == undefined || score == null)
         return { message: '', color: 'black' }
-    if (score < 20) return { message: 'Safe', color: 'green.500' }
-    else if (score < 64)
-        return { message: 'Not recommended', color: 'yellow.500' }
+    if (score >= 70) return { message: 'Safe', color: 'green.500' }
 
+    else if (score < 70 && score >= 35){
+        return {
+            message: 'Not Safe',
+            color: '#FFC107'
+        }
+    }
     return { message: 'Dangerous', color: 'red.500' }
 }
